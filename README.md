@@ -16,7 +16,8 @@ docker build --build-arg JAR_FILE=build/libs/*.war -t springio/gs-spring-boot-do
 docker run -p 8080:8080 springio/gs-spring-boot-docker
 ```
 
-
+## Ref.
+https://spring.io/guides/gs/spring-boot-docker/
 
 
 
