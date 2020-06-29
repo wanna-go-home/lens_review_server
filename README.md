@@ -7,7 +7,7 @@
 ## Containerize
 
 ```
-docker build --build-arg JAR_FILE=build/libs/*.war -t springio/gs-spring-boot-docker .
+docker build --build-arg JAR_FILE="build/libs/*.war" -t springio/gs-spring-boot-docker .
 ```
 
 ## Run on docker
