@@ -1,6 +1,6 @@
 package com.springboot.intelllij.controller;
 
-import com.springboot.intelllij.repository.LensInfoRepository;
+import com.springboot.intelllij.repository.LensRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RestController {
 
     @Autowired
-    LensInfoRepository lensRepo;
+    LensRepository lensRepo;
 
     @GetMapping("/api/lensinfo")
     public Object getLensInfo(){
