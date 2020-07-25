@@ -16,31 +16,38 @@ public class LensEntity {
     @Column(name = "\"lensId\"")
     private Integer lensId;
 
-    @Column(name = "\"BC\"", nullable = true)
-    private Double BC;
-
-    @Column(name = "\"DIA\"", nullable = true)
-    private Double DIA;
-
-    @Column(name = "\"moist\"", nullable = true)
-    private Integer moist;
-
-    @Column(name = "\"name\"", nullable = true)
+    @Column(name = "\"name\"", nullable = false)
     private String name;
 
-    @Column(name = "\"dk\"", nullable = true)
-    private Double dk;
+    @Column(name = "\"graphicDia\"", nullable = true)
+    private Double graphicDia;
 
-    @OneToOne
-    @JoinColumn(name="\"materialId\"", nullable = true)
-    MaterialEntity materialId;
+    @Column(name = "\"perPackage\"", nullable = true)
+    private Integer perPackage;
 
-    @OneToOne
-    @JoinColumn(name="\"originId\"", nullable = true)
-    OriginEntity originId;
+    @Column(name = "\"price\"", nullable = true)
+    private Integer price;
 
-    @OneToOne
-    @JoinColumn(name="\"manId\"", nullable = true)
-    ManufacturerEntity manId;
+    @Column(name = "\"reviewCnt\"", nullable = true)
+    private Integer reviewCnt;
+
+    @Column(name = "\"bc\"", nullable = true)
+    private Double bc;
+
+    @Column(name = "\"dia\"", nullable = true)
+    private Double dia;
+
+    @Column(name = "\"url\"", nullable = true)
+    private String url;
+
+    @Column(name = "\"productImage\"", nullable = true)
+    private String productImage;
+
+    @Column(name = "\"demonstrationImage\"", nullable = true)
+    private String demonstrationImage;
+
+    @Column(name = "\"per\"", nullable = true)
+    private String per;
+
 
 }
