@@ -54,7 +54,7 @@ public class LensEntity {
     @Column(name = "demonstration_image", columnDefinition = "jsonb", nullable = true)
     private JsonNode demonstrationImage;
 
-    @Column(name = "per", columnDefinition = "jsonb", nullable = true)
-    private JsonNode per;
+    @Column(name = "pwr", columnDefinition = "jsonb", nullable = true)
+    private JsonNode pwr;
 
 }
