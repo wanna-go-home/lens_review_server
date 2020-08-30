@@ -22,7 +22,7 @@ public class LensInfoController {
     }
 
     @GetMapping(value = "/api/lensinfo", params = {"id"})
-    public LensEntity getLensInfoById(@RequestParam("id") Integer id){
+    public LensEntity getLensInfoById(@RequestParam("id") Integer id) {
         return lensInfoService.getLensInfoById(id);
     }
 }

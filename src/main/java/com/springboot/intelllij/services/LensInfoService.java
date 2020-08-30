@@ -1,8 +1,10 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.LensEntity;
+import com.springboot.intelllij.exceptions.LensNotFoundException;
 import com.springboot.intelllij.repository.LensRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,6 @@ public class LensInfoService {
     }
 
     public LensEntity getLensInfoById(Integer id) {
-        return lensRepo.findById(id).orElseGet(() -> new LensEntity());
+        return lensRepo.findById(id).orElseThrow(() -> new LensNotFoundException("Lens Not Found"));
     }
 }
