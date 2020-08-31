@@ -1,7 +1,7 @@
 ## How to build using gradle
 
 ```
-./gradlew build && java -jar build/libs/gs-spring-boot-docker-0.1.0.war
+./gradlew build
 ```
 
 ## Containerize
