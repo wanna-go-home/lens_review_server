@@ -1,23 +1,25 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.LensEntity;
 import com.springboot.intelllij.repository.FreeBoardRepository;
 import com.springboot.intelllij.repository.LensRepository;
 import com.springboot.intelllij.repository.UserRepository;
+import com.springboot.intelllij.services.LensInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
-@org.springframework.web.bind.annotation.RestController
-public class RestController {
+import java.util.List;
+
+@RestController
+public class LensInfoController {
 
     @Autowired
-    LensRepository lensRepo;
+    LensInfoService lensInfoService;
 
     @Autowired
     UserRepository userRepo;
@@ -26,9 +28,13 @@ public class RestController {
     FreeBoardRepository freeBoardRepository;
 
     @GetMapping("/api/lensinfo")
-    public Object getLensInfo() {
-        Object result = lensRepo.findAll();
-        return result;
+    public List<LensEntity> getLensInfo(){
+        return lensInfoService.getAllLensInfo();
+    }
+
+    @GetMapping(value = "/api/lensinfo", params = {"id"})
+    public LensEntity getLensInfoById(@RequestParam("id") Integer id) {
+        return lensInfoService.getLensInfoById(id);
     }
 
     @GetMapping("/api/users")
