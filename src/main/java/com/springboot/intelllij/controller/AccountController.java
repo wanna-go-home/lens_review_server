@@ -14,7 +14,7 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @GetMapping("/api/users")
+    @GetMapping("/api/accounts")
     public List<AccountEntity> getAllUsers() {
         return accountService.getAllUsers();
     }
