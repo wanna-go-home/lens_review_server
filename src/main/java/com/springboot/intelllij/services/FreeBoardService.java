@@ -27,7 +27,7 @@ public class FreeBoardService {
 
     public List<FreeBoardPreview> getAllPreviews() {
         //FIXME - To Const
-        int previewRange = 500;
+        int previewRange = 100;
         List<FreeBoardPreview> previews = new ArrayList<>();
         List<FreeBoardEntity> allPosts = freeBoardRepo.findAll();
         for(FreeBoardEntity post : allPosts) {
