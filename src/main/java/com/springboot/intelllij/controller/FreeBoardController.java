@@ -1,6 +1,7 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.FreeBoardPreview;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,9 @@ public class FreeBoardController {
 
     @GetMapping("/api/free-board")
     public List<FreeBoardEntity>  getFreeBoard() { return freeBoardService.getAllPosts(); }
+
+    @GetMapping("/api/free-board/preview")
+    public List<FreeBoardPreview>  getFreeBoardPreviews() { return freeBoardService.getAllPreviews(); }
 
     @PostMapping(path = "/api/free-board", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
