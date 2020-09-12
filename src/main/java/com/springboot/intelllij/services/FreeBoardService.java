@@ -22,7 +22,7 @@ public class FreeBoardService {
 
     public ResponseEntity addPostToFreeBoard(@RequestBody FreeBoardEntity freeBoard) {
         freeBoardRepo.save(freeBoard);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     public List<FreeBoardPreview> getAllPreviews() {
@@ -32,7 +32,8 @@ public class FreeBoardService {
         List<FreeBoardEntity> allPosts = freeBoardRepo.findAll();
         for(FreeBoardEntity post : allPosts) {
             String content = post.getContent();
-            previews.add(new FreeBoardPreview(post.getId(), post.getUserId(), post.getTitle(), content.substring(0, Math.min(content.length(), previewRange))));
+            String shortContent = content.substring(0, Math.min(content.length(), previewRange));
+            previews.add(new FreeBoardPreview(post.getId(), post.getUserId(), post.getTitle(), shortContent));
         }
         return previews;
     }
