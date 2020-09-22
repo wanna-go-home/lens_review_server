@@ -1,6 +1,7 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.domain.LensEntity;
+import com.springboot.intelllij.domain.LensPreviewEntity;
 import com.springboot.intelllij.services.LensInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,6 @@ public class LensInfoController {
         return lensInfoService.getLensInfoById(id);
     }
 
-
+    @GetMapping(value = "/api/lensinfo/preview")
+    public List<LensPreviewEntity> getLensesPreview() { return lensInfoService.getLensesPreview(); }
 }
