@@ -1,5 +1,6 @@
 package com.springboot.intelllij.controller;
 
+import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
 import com.springboot.intelllij.domain.ReviewBoardPreview;
 import com.springboot.intelllij.services.ReviewBoardService;
@@ -11,18 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping(RESTPath.REVIEW_BOARD)
 public class ReviewBoardController {
 
     @Autowired
     ReviewBoardService reviewBoardService;
 
-    @GetMapping("/api/review-board")
+    @GetMapping
     public List<ReviewBoardEntity> getReviewBoard() { return reviewBoardService.getAllPosts(); }
 
-    @GetMapping("/api/review-board/preview")
+    @GetMapping(RESTPath.REVIEW_BOARD_PREVIEW)
     public List<ReviewBoardPreview> getReviewBoardPreview() { return reviewBoardService.getAllPreviews(); }
 
-    @PostMapping(path = "/api/review-board", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardEntity reviewBoard) {
         return reviewBoardService.addPostToReviewBoard(reviewBoard);
     }
