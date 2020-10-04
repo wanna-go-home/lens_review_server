@@ -12,18 +12,14 @@ import javax.persistence.*;
 public class AccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "account_id")
-    private Integer accountId;
+    private String accountId;
 
-    @Column(name = "id")
-    private String id;
+    @Column(name = "account_pw")
+    private String accountPw;
 
     @Column(name = "nickname")
     private String nickname;
-
-    @Column(name = "pw")
-    private String pw;
 
     @Column(name = "email")
     private String email;
