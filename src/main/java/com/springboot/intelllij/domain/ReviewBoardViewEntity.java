@@ -1,17 +1,16 @@
 package com.springboot.intelllij.domain;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "review_board")
-public class ReviewBoardEntity {
+@Entity
+@Table(name = "review_board_view")
+public class ReviewBoardViewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +19,9 @@ public class ReviewBoardEntity {
 
     @Column(name = "account_id")
     private String accountId;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "title")
     private String title;

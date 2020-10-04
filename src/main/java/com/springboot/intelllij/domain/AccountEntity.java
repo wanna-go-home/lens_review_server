@@ -18,8 +18,8 @@ public class AccountEntity {
     @Column(name = "account_pw")
     private String accountPw;
 
-    @Column(name = "nickname")
-    private String nickname;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "email")
     private String email;

@@ -2,7 +2,7 @@ package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.FreeBoardEntity;
-import com.springboot.intelllij.domain.FreeBoardPreviewEntity;
+import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class FreeBoardController {
     public List<FreeBoardEntity>  getFreeBoard() { return freeBoardService.getAllPosts(); }
 
     @GetMapping(RESTPath.FREE_BOARD_PREVIEW)
-    public List<FreeBoardPreviewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
+    public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
