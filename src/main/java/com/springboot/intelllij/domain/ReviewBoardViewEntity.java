@@ -18,10 +18,10 @@ public class ReviewBoardViewEntity {
     private Integer id;
 
     @Column(name = "account_id")
-    private String accountId;
+    private String account;
 
     @Column(name = "name")
-    private String name;
+    private String nickname;
 
     @Column(name = "title")
     private String title;

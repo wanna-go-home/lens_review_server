@@ -2,10 +2,9 @@ package com.springboot.intelllij.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -19,7 +18,7 @@ public class FreeBoardEntity {
     private Integer id;
 
     @Column(name = "account_id")
-    private String accountId;
+    private String account;
 
     @Column(name = "title")
     private String title;
@@ -27,19 +26,15 @@ public class FreeBoardEntity {
     @Column(name = "content")
     private String content;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "view_cnt")
-    private Integer viewCnt;
+    private Integer viewCnt = 0;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "like_cnt")
-    private Integer likeCnt;
+    private Integer likeCnt = 0;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "reply_cnt")
-    private Integer replyCnt;
+    private Integer replyCnt = 0;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at")
-    private Date created_at;
+    private Date createdAt = new Date();
 }
