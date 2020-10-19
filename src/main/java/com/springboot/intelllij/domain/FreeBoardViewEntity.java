@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -38,5 +40,5 @@ public class FreeBoardViewEntity {
     private Integer replyCnt;
 
     @Column(name = "created_at")
-    private Date created_at;
+    private ZonedDateTime createdAt;
 }

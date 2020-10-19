@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -36,7 +37,7 @@ public class ReviewBoardViewEntity {
     private Integer replyCnt;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private ZonedDateTime createdAt;
 
     @Column(name = "lens_id")
     private Integer lensId;

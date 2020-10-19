@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -33,7 +35,7 @@ public class ReviewBoardEntity {
     private Integer replyCnt = 0;
 
     @Column(name = "created_at")
-    private Date createdAt = new Date();
+    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     @Column(name = "lens_id")
     private Integer lensId;
