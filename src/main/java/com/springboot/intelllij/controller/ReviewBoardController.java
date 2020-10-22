@@ -2,7 +2,7 @@ package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
-import com.springboot.intelllij.domain.ReviewBoardPreviewEntity;
+import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class ReviewBoardController {
     public List<ReviewBoardEntity> getReviewBoard() { return reviewBoardService.getAllPosts(); }
 
     @GetMapping(RESTPath.REVIEW_BOARD_PREVIEW)
-    public List<ReviewBoardPreviewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
+    public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardEntity reviewBoard) {

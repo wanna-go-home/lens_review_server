@@ -13,12 +13,12 @@ public class AccountEntity {
 
     @Id
     @Column(name = "account_id")
-    private String accountId;
+    private String account;
 
     @Column(name = "account_pw")
     private String accountPw;
 
-    @Column(name = "nickname")
+    @Column(name = "name")
     private String nickname;
 
     @Column(name = "email")

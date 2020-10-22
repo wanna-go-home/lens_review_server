@@ -1,6 +1,6 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.ReviewBoardPreviewEntity;
+import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,5 +13,5 @@ public class ReviewBoardPreviewService {
     @Autowired
     ReviewBoardPreviewRepository reviewBoardPreviewRepo;
 
-    public List<ReviewBoardPreviewEntity> getAllPreview() { return reviewBoardPreviewRepo.findAll(); }
+    public List<ReviewBoardViewEntity> getAllPreview() { return reviewBoardPreviewRepo.findAll(); }
 }
