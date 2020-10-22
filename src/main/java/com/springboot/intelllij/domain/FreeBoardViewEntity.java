@@ -4,23 +4,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "free_board")
-public class FreeBoardEntity {
+@Entity
+@Table(name = "free_board_view")
+public class FreeBoardViewEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
     @Column(name = "account_id")
     private String account;
+
+    @Column(name = "name")
+    private String nickname;
 
     @Column(name = "title")
     private String title;
@@ -29,14 +31,14 @@ public class FreeBoardEntity {
     private String content;
 
     @Column(name = "view_cnt")
-    private Integer viewCnt = 0;
+    private Integer viewCnt;
 
     @Column(name = "like_cnt")
-    private Integer likeCnt = 0;
+    private Integer likeCnt;
 
     @Column(name = "reply_cnt")
-    private Integer replyCnt = 0;
+    private Integer replyCnt;
 
     @Column(name = "created_at")
-    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    private ZonedDateTime createdAt;
 }

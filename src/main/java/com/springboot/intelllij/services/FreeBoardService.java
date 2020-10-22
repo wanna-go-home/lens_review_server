@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FreeBoardService {
@@ -22,4 +23,6 @@ public class FreeBoardService {
         freeBoardRepo.save(freeBoard);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
+
+    public Optional<FreeBoardEntity> getFreeBoardById(Integer id) { return freeBoardRepo.findById(id); }
 }
