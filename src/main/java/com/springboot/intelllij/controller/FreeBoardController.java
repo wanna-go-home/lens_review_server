@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(RESTPath.FREE_BOARD)
@@ -23,10 +24,12 @@ public class FreeBoardController {
     FreeBoardPreviewService freeBoardPreviewService;
 
     @GetMapping
-    public List<FreeBoardEntity>  getFreeBoard() { return freeBoardService.getAllPosts(); }
-
-    @GetMapping(RESTPath.FREE_BOARD_PREVIEW)
     public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
+
+    @GetMapping(value = "/{id}")
+    public Optional<FreeBoardEntity> getFreeBoardById(@PathVariable(name = "id") Integer id) {
+        return freeBoardService.getFreeBoardById(id);
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

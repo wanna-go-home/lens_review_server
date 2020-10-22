@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(RESTPath.REVIEW_BOARD)
@@ -23,10 +24,12 @@ public class ReviewBoardController {
     ReviewBoardPreviewService reviewBoardPreviewService;
 
     @GetMapping
-    public List<ReviewBoardEntity> getReviewBoard() { return reviewBoardService.getAllPosts(); }
-
-    @GetMapping(RESTPath.REVIEW_BOARD_PREVIEW)
     public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
+
+    @GetMapping(value = "/{id}")
+    public Optional<ReviewBoardEntity> getReviewBoardById(@PathVariable(name = "id") Integer id) {
+        return reviewBoardService.getReviewBoardById(id);
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardEntity reviewBoard) {
