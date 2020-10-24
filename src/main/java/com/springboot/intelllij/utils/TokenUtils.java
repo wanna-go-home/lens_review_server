@@ -64,9 +64,9 @@ public class TokenUtils {
 
     private Map<String, Object> createClaims(AccountEntity account) {
         Map<String,Object> claims = new HashMap<>();
-        claims.put("id",account.getAccountId());
+        claims.put("id",account.getAccount());
         claims.put("email",account.getEmail());
-        claims.put("nickname",account.getName());
+        claims.put("nickname",account.getNickname());
         return claims;
     }
 

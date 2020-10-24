@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReviewBoardService {
@@ -17,6 +18,10 @@ public class ReviewBoardService {
     private ReviewBoardRepository reviewBoardRepo;
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
+
+    public Optional<ReviewBoardEntity> getReviewBoardById(Integer id) {
+        return reviewBoardRepo.findById(id);
+    }
 
     public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardEntity reviewBoard) {
         reviewBoardRepo.save(reviewBoard);
