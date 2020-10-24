@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	compile "io.springfox:springfox-swagger2:2.9.2"
 	compile 'io.springfox:springfox-swagger-ui:2.9.2'
 	compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.9.13'
