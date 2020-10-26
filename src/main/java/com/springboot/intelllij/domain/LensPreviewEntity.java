@@ -31,6 +31,9 @@ public class LensPreviewEntity {
     @Column(name = "price")
     private Integer price;
 
+    @Column(name = "graphic_dia")
+    private Float graphicDia;
+
     @Column(name = "product_image", columnDefinition = "jsonb", nullable = true)
     private JsonNode productImage;
 }
