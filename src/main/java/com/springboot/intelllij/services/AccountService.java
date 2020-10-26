@@ -33,10 +33,15 @@ public class AccountService {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
-    public AccountEntity signup(String id, String pw, String email, String nickName, String phoneNumber) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        AccountEntity newUser = new AccountEntity(id,bCryptPasswordEncoder.encode(pw),nickName,email,phoneNumber);
-        return userRepo.save(newUser);
+    public ResponseEntity signup(AccountEntity accountEntity) {
+        if(checkId(accountEntity.getAccount()).getStatusCode().equals(HttpStatus.OK)
+                && checkNickName(accountEntity.getNickname()).getStatusCode().equals(HttpStatus.OK)) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            accountEntity.setAccountPw(bCryptPasswordEncoder.encode(accountEntity.getAccountPw()));
+            userRepo.save(accountEntity);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
 }

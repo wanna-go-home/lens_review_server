@@ -25,11 +25,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/signup")
-    public AccountEntity signup(@RequestHeader(value = "id") String id,
-                                @RequestHeader(value = "pw") String pw,
-                                @RequestHeader(value = "email") String email,
-                                @RequestHeader(value = "nickName") String nickName,
-                                @RequestHeader(value = "phoneNumber") String phoneNumber) {
-        return accountService.signup(id, pw, email, nickName, phoneNumber);
+    public ResponseEntity signup(@RequestBody AccountEntity accountEntity) {
+        return accountService.signup(accountEntity);
     }
 }
