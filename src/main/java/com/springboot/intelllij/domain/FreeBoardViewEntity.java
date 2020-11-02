@@ -1,11 +1,13 @@
 package com.springboot.intelllij.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.sql.Date;
-import java.time.ZoneId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -40,5 +42,6 @@ public class FreeBoardViewEntity {
     private Integer replyCnt;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private ZonedDateTime createdAt;
 }

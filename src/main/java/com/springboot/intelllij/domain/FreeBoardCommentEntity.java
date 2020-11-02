@@ -1,5 +1,6 @@
 package com.springboot.intelllij.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,7 @@ public class FreeBoardCommentEntity {
     private Integer likeCnt = 0;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     @Column(name = "depth")

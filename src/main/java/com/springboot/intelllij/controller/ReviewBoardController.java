@@ -1,11 +1,9 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
-import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
 import com.springboot.intelllij.domain.ReviewBoardViewEntity;
-import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
 import com.springboot.intelllij.services.ReviewBoardCommentService;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
@@ -48,5 +46,10 @@ public class ReviewBoardController {
     public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody ReviewBoardCommentEntity comment) {
         comment.setPostId(id);
         return reviewBoardCommentService.post(comment);
+    }
+
+    @GetMapping(value = "/{id}/comments")
+    public List<ReviewBoardCommentEntity> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
+        return reviewBoardCommentService.getCommentByPostId(postId);
     }
 }
