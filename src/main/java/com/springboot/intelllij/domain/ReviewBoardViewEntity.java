@@ -30,6 +30,9 @@ public class ReviewBoardViewEntity {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "view_cnt")
+    private Integer viewCnt = 0;
+
     @Column(name = "like_cnt")
     private Integer likeCnt;
 
