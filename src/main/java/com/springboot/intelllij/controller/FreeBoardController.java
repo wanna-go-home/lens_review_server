@@ -1,8 +1,10 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
+import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
+import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class FreeBoardController {
     @Autowired
     FreeBoardPreviewService freeBoardPreviewService;
 
+    @Autowired
+    FreeBoardCommentService freeBoardCommentService;
+
     @GetMapping
     public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
 
@@ -35,5 +40,12 @@ public class FreeBoardController {
     @ResponseBody
     public ResponseEntity addPostToFreeBoard(@RequestBody FreeBoardEntity freeBoard) {
         return freeBoardService.addPostToFreeBoard(freeBoard);
+    }
+
+    @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody FreeBoardCommentEntity comment) {
+        comment.setPostId(id);
+        return freeBoardCommentService.post(comment);
     }
 }
