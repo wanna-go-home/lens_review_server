@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 public class FreeBoardCommentService {
 
@@ -16,5 +19,15 @@ public class FreeBoardCommentService {
     public ResponseEntity post( FreeBoardCommentEntity comment) {
         freeBoardCommentRepo.save(comment);
         return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    public List<FreeBoardCommentEntity> getCommentByPostId(Integer postId) {
+        List<FreeBoardCommentEntity> comments = freeBoardCommentRepo.findByPostId(postId);
+
+        Comparator<FreeBoardCommentEntity> comparator = Comparator.comparing(FreeBoardCommentEntity::getCreatedAt);
+        comparator = comparator.thenComparingInt(FreeBoardCommentEntity::getBundleId);
+        comments.sort(comparator);
+
+        return comments;
     }
 }

@@ -1,10 +1,10 @@
 package com.springboot.intelllij.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -30,6 +30,9 @@ public class ReviewBoardViewEntity {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "view_cnt")
+    private Integer viewCnt = 0;
+
     @Column(name = "like_cnt")
     private Integer likeCnt;
 
@@ -37,6 +40,7 @@ public class ReviewBoardViewEntity {
     private Integer replyCnt;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private ZonedDateTime createdAt;
 
     @Column(name = "lens_id")
