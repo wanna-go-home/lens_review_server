@@ -2,6 +2,7 @@ package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
+import com.springboot.intelllij.domain.ReviewBoardDto;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
 import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.services.ReviewBoardCommentService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,8 +39,8 @@ public class ReviewBoardController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardEntity reviewBoard) {
-        return reviewBoardService.addPostToReviewBoard(reviewBoard);
+    public ResponseEntity addPostToReviewBoard(@RequestBody ReviewBoardDto reviewBoardDto) {
+        return reviewBoardService.addPostToReviewBoard(reviewBoardDto);
     }
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
