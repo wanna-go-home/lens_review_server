@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Getter
@@ -16,24 +18,10 @@ import javax.persistence.*;
         typeClass = JsonBinaryType.class,
         defaultForType = JsonNode.class
 )
-public class LensEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "lens_id")
-    private Integer lensId;
-
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "graphic_dia", nullable = true)
-    private Double graphicDia;
+public class LensEntity extends LensBaseEntity {
 
     @Column(name = "per_package", nullable = true)
     private Integer perPackage;
-
-    @Column(name = "price", nullable = true)
-    private Integer price;
 
     @Column(name = "review_cnt", nullable = true)
     private Integer reviewCnt;
@@ -46,9 +34,6 @@ public class LensEntity {
 
     @Column(name = "url", nullable = true)
     private String url;
-
-    @Column(name = "product_image", columnDefinition = "jsonb", nullable = true)
-    private JsonNode productImage;
 
     @Column(name = "demonstration_image", columnDefinition = "jsonb", nullable = true)
     private JsonNode demonstrationImage;

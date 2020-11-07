@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Getter
@@ -19,21 +17,5 @@ import javax.persistence.Table;
         typeClass = JsonBinaryType.class,
         defaultForType = JsonNode.class
 )
-public class LensPreviewEntity {
-
-    @Id
-    @Column(name = "lens_id")
-    private Integer lens_id;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "price")
-    private Integer price;
-
-    @Column(name = "graphic_dia")
-    private Float graphicDia;
-
-    @Column(name = "product_image", columnDefinition = "jsonb", nullable = true)
-    private JsonNode productImage;
+public class LensPreviewEntity extends LensBaseEntity {
 }

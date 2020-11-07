@@ -1,44 +1,15 @@
 package com.springboot.intelllij.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Getter
 @Setter
 @Table (name = "review_board_comment")
-public class ReviewBoardCommentEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
-
-    @Column(name = "account_id")
-    private String accountId;
-
-    @Column(name = "post_id")
-    private Integer postId;
-
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "like_cnt")
-    private Integer likeCnt = 0;
-
-    @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-    @Column(name = "depth")
-    private Integer depth;
-
-    @Column(name = "bundle_id")
-    private Integer bundleId;
+public class ReviewBoardCommentEntity extends CommentBaseEntity {
 }
 
