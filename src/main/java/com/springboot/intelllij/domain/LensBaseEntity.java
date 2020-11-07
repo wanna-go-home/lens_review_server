@@ -19,7 +19,7 @@ public class LensBaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "lens_id")
-    private Integer lens_id;
+    private Integer lensId;
 
     @Column(name = "name")
     private String name;
