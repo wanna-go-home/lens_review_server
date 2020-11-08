@@ -2,6 +2,7 @@ package com.springboot.intelllij.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import java.time.ZonedDateTime;
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor
 public class BoardBaseEntity extends BaseEntity {
     @Column(name = "account_id")
     private String account;
@@ -34,4 +36,10 @@ public class BoardBaseEntity extends BaseEntity {
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
+    public BoardBaseEntity(String account, String title, String content) {
+        this.account = account;
+        this.title = title;
+        this.content = content;
+    }
 }

@@ -47,6 +47,11 @@ public class TokenUtils {
             return header.split(" ")[1];
     }
 
+    public static String getUserAccount(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("id").toString();
+    }
+
     private static Claims getClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
                 .parseClaimsJws(token).getBody();
