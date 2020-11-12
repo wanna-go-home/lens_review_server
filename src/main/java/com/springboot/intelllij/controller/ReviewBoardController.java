@@ -34,7 +34,7 @@ public class ReviewBoardController {
     public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
 
     @GetMapping(value = "/{id}")
-    public Optional<ReviewBoardEntity> getReviewBoardById(@PathVariable(name = "id") Integer id) {
+    public ReviewBoardEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.getReviewBoardById(id);
     }
 
