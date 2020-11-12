@@ -34,8 +34,8 @@ public class BoardBaseEntity extends BaseEntity {
     private Integer replyCnt = 0;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("UTC"));
 
     public BoardBaseEntity(String account, String title, String content) {
         this.account = account;
