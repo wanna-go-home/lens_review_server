@@ -26,8 +26,8 @@ public class CommentBaseEntity extends BaseEntity {
     private Integer likeCnt = 0;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("UTC"));
 
     @Column(name = "depth")
     private Integer depth = 0;
