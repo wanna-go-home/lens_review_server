@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.AccountEntity;
 import com.springboot.intelllij.domain.ReviewBoardDto;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
+import com.springboot.intelllij.exceptions.ReviewBoardNotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ public class ReviewBoardService {
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
-    public Optional<ReviewBoardEntity> getReviewBoardById(Integer id) {
-        return reviewBoardRepo.findById(id);
+    public ReviewBoardEntity getReviewBoardById(Integer id) {
+        return reviewBoardRepo.findById(id).orElseThrow(()-> new ReviewBoardNotFoundException("Review Board Not Found"));
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
