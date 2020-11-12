@@ -1,8 +1,10 @@
 package com.springboot.intelllij.exceptions;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum EntityNotFoundExceptionEnum {
 
     LENS_NOT_FOUND(1,"Lens Not Found"),
@@ -12,8 +14,4 @@ public enum EntityNotFoundExceptionEnum {
     private final int errorCode;
     private final String msg;
 
-    EntityNotFoundExceptionEnum(final int errorCode, final String msg){
-        this.errorCode = errorCode;
-        this.msg = msg;
-    }
 }
