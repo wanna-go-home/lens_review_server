@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum EntityNotFoundExceptionEnum {
 
     LENS_NOT_FOUND(1,"Lens Not Found"),
-    REVIEW_BOARD_NOT_FOUND(2,"Review Board Not Found")
+    REVIEW_BOARD_NOT_FOUND(2,"Review Board Not Found"),
+    USER_NOT_FOUND(3,"User Not Found")
     ;
 
     private final int errorCode;
