@@ -4,9 +4,7 @@ public class RESTPath {
     public static final String API_PREFIX = "/api";
 
     public static final String LENS_INFO =  API_PREFIX + "/lens";
-
-    public static final String ACCOUNTS = API_PREFIX + "/accounts";
-
+    
     public static final String USER = API_PREFIX + "/user";
 
     public static final String BOARDS = "/boards";

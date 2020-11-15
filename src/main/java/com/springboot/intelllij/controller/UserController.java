@@ -7,12 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(RESTPath.USER)
 public class UserController {
 
     @Autowired
     AccountService accountService;
+
+    @GetMapping
+    public List<AccountEntity> getAllUsers() {
+        return accountService.getAllUsers();
+    }
 
     @GetMapping(value = "/check/id")
     public ResponseEntity checkId(@RequestParam(value = "id") String id) {
