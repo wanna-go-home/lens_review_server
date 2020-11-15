@@ -2,6 +2,7 @@ package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.AccountEntity;
+import com.springboot.intelllij.domain.UserInfoDTO;
 import com.springboot.intelllij.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,10 @@ public class UserController {
     @PostMapping(value = "/signup")
     public ResponseEntity signup(@RequestBody AccountEntity accountEntity) {
         return accountService.signup(accountEntity);
+    }
+
+    @GetMapping(value = "/me")
+    public UserInfoDTO userInfo() {
+        return accountService.getUserInfo();
     }
 }
