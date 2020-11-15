@@ -1,10 +1,11 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.AccountEntity;
-import com.springboot.intelllij.repository.AccountRepository;
+import com.springboot.intelllij.domain.*;
+import com.springboot.intelllij.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,18 @@ public class AccountService {
 
     @Autowired
     AccountRepository userRepo;
+
+    @Autowired
+    ReviewBoardRepository reviewRepo;
+
+    @Autowired
+    FreeBoardRepository freeRepo;
+
+    @Autowired
+    FreeBoardCommentRepository freeCommentRepo;
+
+    @Autowired
+    ReviewBoardCommentRepository reviewCOmmentRepo;
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
@@ -42,6 +55,30 @@ public class AccountService {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    public UserInfoDTO getUserInfo() {
+        UserInfoDTO userInfo = new UserInfoDTO();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccount(user);
+        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccount(user);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByAccountId(user);
+        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByAccountId(user);
+
+        int likeCount = 0;
+        likeCount += reviewBoardEntities.stream().mapToInt(reviewBoardEntity -> reviewBoardEntity.getLikeCnt()).sum();
+        likeCount += freeBoardEntities.stream().mapToInt(freeBoardEntity -> freeBoardEntity.getLikeCnt()).sum();
+        likeCount += reviewBoardCommentEntities.stream().mapToInt(reviewComment -> reviewComment.getLikeCnt()).sum();
+        likeCount += freeBoardCommentEntities.stream().mapToInt(freeComment -> freeComment.getLikeCnt()).sum();
+
+        userInfo.setFreeCount(freeBoardEntities.size());
+        userInfo.setReviewCount(reviewBoardEntities.size());
+        userInfo.setFreeCommentCount(freeBoardCommentEntities.size());
+        userInfo.setReviewCommentCount(reviewBoardCommentEntities.size());
+        userInfo.setLikeCount(likeCount);
+
+        return userInfo;
     }
 
 }
