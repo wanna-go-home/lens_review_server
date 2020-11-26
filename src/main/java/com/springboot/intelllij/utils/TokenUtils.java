@@ -22,7 +22,7 @@ public class TokenUtils {
 
     public String generateJwt(AccountEntity account) {
         JwtBuilder builder = Jwts.builder()
-                .setSubject(account.getEmail())
+                .setSubject(account.getAccount())
                 .setHeader(createHeader())
                 .setClaims(createClaims(account))
                 .setExpiration(createExpireDateForOneYear())
@@ -68,7 +68,6 @@ public class TokenUtils {
     private Map<String, Object> createClaims(AccountEntity account) {
         Map<String,Object> claims = new HashMap<>();
         claims.put("id",account.getAccount());
-        claims.put("email",account.getEmail());
         claims.put("nickname",account.getNickname());
         return claims;
     }

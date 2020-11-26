@@ -11,9 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.REVIEW_BOARD_NOT_FOUND;
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
 
 @Service
@@ -83,7 +81,6 @@ public class AccountService {
         userInfo.setFreeCommentCount(freeBoardCommentEntities.size());
         userInfo.setReviewCommentCount(reviewBoardCommentEntities.size());
         userInfo.setLikeCount(likeCount);
-        userInfo.setEmail(account.getEmail());
         userInfo.setNickName(account.getNickname());
 
         return userInfo;
