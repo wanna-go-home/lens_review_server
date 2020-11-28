@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
+import com.springboot.intelllij.utils.StringValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class AccountService {
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
     public ResponseEntity checkId(String id) {
-        if (userRepo.findById(id).isPresent()) {
+        if (userRepo.findById(id).isPresent() || !StringValidationUtils.isValidEmail(id)) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -49,9 +50,18 @@ public class AccountService {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
+    public ResponseEntity checkPhoneNumber(String phoneNumber) {
+        List<AccountEntity> phoneNumList = userRepo.findByPhoneNum(phoneNumber);
+        if(phoneNumList.isEmpty() || !StringValidationUtils.isValidPhoneNumber(phoneNumber)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
     public ResponseEntity signup(AccountEntity accountEntity) {
-        if(checkId(accountEntity.getAccount()).getStatusCode().equals(HttpStatus.OK)
-                && checkNickName(accountEntity.getNickname()).getStatusCode().equals(HttpStatus.OK)) {
+        if(checkId(accountEntity.getAccountEmail()).getStatusCode().equals(HttpStatus.OK)
+                && checkNickName(accountEntity.getNickname()).getStatusCode().equals(HttpStatus.OK)
+                && checkPhoneNumber(accountEntity.getPhoneNum()).getStatusCode().equals(HttpStatus.OK)) {
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             accountEntity.setAccountPw(bCryptPasswordEncoder.encode(accountEntity.getAccountPw()));
             userRepo.save(accountEntity);

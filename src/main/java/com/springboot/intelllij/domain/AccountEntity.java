@@ -20,7 +20,7 @@ public class AccountEntity {
 
     @Id
     @Column(name = "account_id")
-    private String account;
+    private String accountEmail;
 
     @Column(name = "account_pw")
     private String accountPw;

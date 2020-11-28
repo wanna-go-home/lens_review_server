@@ -32,6 +32,11 @@ public class UserController {
         return accountService.checkNickName(nickName);
     }
 
+    @GetMapping(value = "/check/phoneNum")
+    public ResponseEntity checkPhoneNumber(@RequestParam(value = "phoneNum") String phoneNum) {
+        return accountService.checkPhoneNumber(phoneNum);
+    }
+
     @PostMapping(value = "/signup")
     public ResponseEntity signup(@RequestBody AccountEntity accountEntity) {
         return accountService.signup(accountEntity);
