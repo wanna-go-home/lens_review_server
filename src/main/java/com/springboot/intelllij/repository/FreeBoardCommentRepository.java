@@ -8,5 +8,9 @@ import java.util.List;
 public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardCommentEntity, Integer> {
     List<FreeBoardCommentEntity> findByPostId(Integer postId);
 
+    List<FreeBoardCommentEntity> findByPostIdAndDepth(Integer postId, Integer depth);
+
+    List<FreeBoardCommentEntity> findByBundleIdAndDepth(Integer bundleId, Integer depth);
+
     List<FreeBoardCommentEntity> findByAccountId(String accountId);
 }
