@@ -3,6 +3,7 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.FreeBoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
@@ -34,6 +35,17 @@ public class FreeBoardController {
     @GetMapping(value = "/{id}")
     public Optional<FreeBoardEntity> getFreeBoardById(@PathVariable(name = "id") Integer id) {
         return freeBoardService.getFreeBoardById(id);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateFreeBoardById(
+            @PathVariable(name = "id") Integer id, @RequestBody FreeBoardUpdateDTO dto) {
+        return freeBoardService.updatePost(id, dto.getTitle(), dto.getContent());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deletePostAndComments(@PathVariable(name = "id") Integer id) {
+        return freeBoardService.deletePostAndComments(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

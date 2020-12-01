@@ -9,4 +9,6 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
     List<FreeBoardCommentEntity> findByPostId(Integer postId);
 
     List<FreeBoardCommentEntity> findByAccountId(String accountId);
+
+    void deleteByPostId(Integer postId);
 }
