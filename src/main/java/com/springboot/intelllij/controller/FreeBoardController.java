@@ -1,9 +1,9 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
+import com.springboot.intelllij.domain.BoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.FreeBoardEntity;
-import com.springboot.intelllij.domain.FreeBoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
@@ -39,7 +39,7 @@ public class FreeBoardController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateFreeBoardById(
-            @PathVariable(name = "id") Integer id, @RequestBody FreeBoardUpdateDTO dto) {
+            @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
         return freeBoardService.updatePost(id, dto.getTitle(), dto.getContent());
     }
 

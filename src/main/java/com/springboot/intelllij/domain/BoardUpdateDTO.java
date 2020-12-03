@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FreeBoardUpdateDTO {
+public class BoardUpdateDTO {
 
     private String title;
     private String content;

@@ -1,10 +1,7 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
-import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
-import com.springboot.intelllij.domain.ReviewBoardDto;
-import com.springboot.intelllij.domain.ReviewBoardEntity;
-import com.springboot.intelllij.domain.ReviewBoardViewEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.ReviewBoardCommentService;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
@@ -14,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(RESTPath.REVIEW_BOARD)
@@ -36,6 +31,17 @@ public class ReviewBoardController {
     @GetMapping(value = "/{id}")
     public ReviewBoardEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.getReviewBoardById(id);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateReviewBoardById(
+            @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
+        return reviewBoardService.updatePost(id, dto.getTitle(), dto.getContent());
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deletePostAndComments(@PathVariable(name = "id") Integer id) {
+        return reviewBoardService.deletePostAndComments(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
