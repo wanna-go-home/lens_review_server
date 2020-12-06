@@ -65,4 +65,10 @@ public class FreeBoardController {
     public List<FreeBoardCommentEntity> getFreeBoardComment(@PathVariable(name = "id") Integer postId) {
         return freeBoardCommentService.getCommentByPostId(postId);
     }
+
+    @GetMapping(value = "/{id}/comment/{commendId}")
+    public List<FreeBoardCommentEntity> getFreeBoardAllComments(@PathVariable(name = "id") Integer postId,
+                                                            @PathVariable(name = "commendId") Integer commentId) {
+        return freeBoardCommentService.getAllCommentByPostId(postId,commentId);
+    }
 }

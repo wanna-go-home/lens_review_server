@@ -1,6 +1,7 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
+import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
 
 @Service
 public class FreeBoardCommentService {
@@ -45,6 +48,22 @@ public class FreeBoardCommentService {
                 resultCommentList.add(commentsOfComment.get(i));
             }
         }
+
+        return resultCommentList;
+    }
+
+    public List<FreeBoardCommentEntity> getAllCommentByPostId(Integer postId, Integer commentId) {
+        FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
+                .stream().filter(freeBoardCommentEntity -> freeBoardCommentEntity.getId().equals(commentId)).findFirst()
+                .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+        List<FreeBoardCommentEntity> commentsOfComment = freeBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(),COMMENT_OF_COMMENT_DEPTH);
+        List<FreeBoardCommentEntity> resultCommentList = new ArrayList<>();
+
+        resultCommentList.add(originalComment);
+
+        commentsOfComment.forEach(bundle -> {
+            resultCommentList.add(bundle);
+        });
 
         return resultCommentList;
     }
