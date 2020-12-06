@@ -1,8 +1,10 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
+import com.springboot.intelllij.repository.FreeBoardPreviewRepository;
 import com.springboot.intelllij.repository.FreeBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ public class FreeBoardService {
     @Autowired
     FreeBoardRepository freeBoardRepo;
     @Autowired
+    FreeBoardPreviewRepository freeBoardPreviewRepository;
+    @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
 
     public List<FreeBoardEntity> getAllPosts() { return freeBoardRepo.findAll(); }
@@ -30,7 +34,7 @@ public class FreeBoardService {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    public Optional<FreeBoardEntity> getFreeBoardById(Integer id) { return freeBoardRepo.findById(id); }
+    public Optional<FreeBoardViewEntity> getFreeBoardById(Integer id) { return freeBoardPreviewRepository.findById(id); }
 
     @Transactional
     public ResponseEntity deletePostAndComments(Integer id) {
