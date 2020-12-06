@@ -33,7 +33,7 @@ public class FreeBoardController {
     public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
 
     @GetMapping(value = "/{id}")
-    public Optional<FreeBoardEntity> getFreeBoardById(@PathVariable(name = "id") Integer id) {
+    public FreeBoardViewEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
         return freeBoardService.getFreeBoardById(id);
     }
 
