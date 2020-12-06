@@ -9,4 +9,6 @@ public interface ReviewBoardCommentRepository extends JpaRepository<ReviewBoardC
     List<ReviewBoardCommentEntity> findByPostId(Integer integer);
 
     List<ReviewBoardCommentEntity> findByAccountId(String accountId);
+
+    void deleteByPostId(Integer postId);
 }
