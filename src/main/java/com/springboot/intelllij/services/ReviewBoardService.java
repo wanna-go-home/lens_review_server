@@ -2,8 +2,10 @@ package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.ReviewBoardDto;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
+import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
+import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,22 +16,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.REVIEW_BOARD_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.*;
 
 @Service
 public class ReviewBoardService {
 
     @Autowired
     private ReviewBoardRepository reviewBoardRepo;
-
+    @Autowired
+    private ReviewBoardPreviewRepository reviewBoardPreviewRepository;
     @Autowired
     private ReviewBoardCommentRepository reviewBoardCommentRepository;
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
-    public ReviewBoardEntity getReviewBoardById(Integer id) {
-        return reviewBoardRepo.findById(id).orElseThrow(()-> new NotFoundException(REVIEW_BOARD_NOT_FOUND));
+    public ReviewBoardViewEntity getReviewBoardById(Integer id) {
+        return reviewBoardPreviewRepository.findById(id).orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
