@@ -67,4 +67,17 @@ public class FreeBoardCommentService {
 
         return resultCommentList;
     }
+
+    public FreeBoardCommentEntity updateComment(Integer postId, Integer commentId, String content) {
+        FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+
+        originalComment.setContent(content);
+
+        return freeBoardCommentRepo.save(originalComment);
+    }
+
+    public ResponseEntity deleteComment(Integer postId, Integer commentId) {
+        freeBoardCommentRepo.deleteById(commentId);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }
