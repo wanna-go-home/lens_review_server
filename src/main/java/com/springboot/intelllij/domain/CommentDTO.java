@@ -13,6 +13,5 @@ import java.util.Optional;
 @NoArgsConstructor
 public class CommentDTO {
     Integer bundleId;
-    Integer depth;
     String content;
 }

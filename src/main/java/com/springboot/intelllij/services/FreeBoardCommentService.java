@@ -35,13 +35,13 @@ public class FreeBoardCommentService {
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
-        commentEntity.setDepth(comment.getDepth());
 
         commentEntity.setCreatedAt(ZonedDateTime.now());
         commentEntity.setAccountId(user);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());
+            commentEntity.setDepth(COMMENT_OF_COMMENT_DEPTH);
             freeBoardCommentRepo.save(commentEntity);
         } else {
             FreeBoardCommentEntity savedEntity = freeBoardCommentRepo.save(commentEntity);
