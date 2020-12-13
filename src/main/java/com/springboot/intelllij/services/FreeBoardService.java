@@ -1,5 +1,6 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.domain.BoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
@@ -9,9 +10,11 @@ import com.springboot.intelllij.repository.FreeBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +33,17 @@ public class FreeBoardService {
 
     public List<FreeBoardEntity> getAllPosts() { return freeBoardRepo.findAll(); }
 
-    public ResponseEntity addPostToFreeBoard(FreeBoardEntity freeBoard) {
-        freeBoardRepo.save(freeBoard);
+    public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        FreeBoardEntity entity = new FreeBoardEntity();
+
+        entity.setAccount(user);
+        entity.setContent(freeBoard.getContent());
+        entity.setCreatedAt(ZonedDateTime.now());
+        entity.setTitle(freeBoard.getTitle());
+
+        freeBoardRepo.save(entity);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

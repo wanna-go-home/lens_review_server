@@ -1,13 +1,17 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.domain.CommentDTO;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,8 +28,26 @@ public class FreeBoardCommentService {
     private final int COMMENT_DEPTH = 0;
     private final int COMMENT_OF_COMMENT_DEPTH = 1;
 
-    public ResponseEntity post( FreeBoardCommentEntity comment) {
-        freeBoardCommentRepo.save(comment);
+    public ResponseEntity post(Integer postId,CommentDTO comment) {
+        FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+
+        commentEntity.setContent(comment.getContent());
+        commentEntity.setPostId(postId);
+        commentEntity.setDepth(comment.getDepth());
+
+        commentEntity.setCreatedAt(ZonedDateTime.now());
+        commentEntity.setAccountId(user);
+
+        if(comment.getBundleId() != null) {
+            commentEntity.setBundleId(comment.getBundleId());
+            freeBoardCommentRepo.save(commentEntity);
+        } else {
+            FreeBoardCommentEntity savedEntity = freeBoardCommentRepo.save(commentEntity);
+            savedEntity.setBundleId(savedEntity.getId());
+            freeBoardCommentRepo.save(savedEntity);
+        }
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

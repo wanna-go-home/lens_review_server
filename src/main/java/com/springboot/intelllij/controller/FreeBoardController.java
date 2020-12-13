@@ -1,10 +1,7 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
-import com.springboot.intelllij.domain.BoardUpdateDTO;
-import com.springboot.intelllij.domain.FreeBoardCommentEntity;
-import com.springboot.intelllij.domain.FreeBoardEntity;
-import com.springboot.intelllij.domain.FreeBoardViewEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
@@ -50,15 +47,14 @@ public class FreeBoardController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity addPostToFreeBoard(@RequestBody FreeBoardEntity freeBoard) {
+    public ResponseEntity addPostToFreeBoard(@RequestBody BoardUpdateDTO freeBoard) {
         return freeBoardService.addPostToFreeBoard(freeBoard);
     }
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody FreeBoardCommentEntity comment) {
-        comment.setPostId(id);
-        return freeBoardCommentService.post(comment);
+    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentDTO comment) {
+        return freeBoardCommentService.post(id, comment);
     }
 
     @GetMapping(value = "/{id}/comments")
