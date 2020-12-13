@@ -71,4 +71,19 @@ public class FreeBoardController {
                                                             @PathVariable(name = "commendId") Integer commentId) {
         return freeBoardCommentService.getAllCommentByPostId(postId,commentId);
     }
+
+    @PutMapping(value = "/{id}/comment/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public FreeBoardCommentEntity updateFreeBoardCommentById(
+            @PathVariable(name = "id") Integer postId,
+            @PathVariable(name = "commendId") Integer commentId,
+            @RequestBody String content) {
+        return freeBoardCommentService.updateComment(postId, commentId, content);
+    }
+
+    @DeleteMapping(value = "/{id}/comment/{commendId}")
+    public ResponseEntity deleteFreeBoardCommentById(
+            @PathVariable(name = "id") Integer postId,
+            @PathVariable(name = "commendId") Integer commentId) {
+        return freeBoardCommentService.deleteComment(postId, commentId);
+    }
 }
