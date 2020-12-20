@@ -35,6 +35,13 @@ public class AccountService {
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
+    public ResponseEntity deleteUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        userRepo.deleteById(user);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     public ResponseEntity checkId(String id) {
         if (userRepo.findById(id).isPresent() || !StringValidationUtils.isValidEmail(id)) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
