@@ -30,8 +30,13 @@ public class ReviewBoardService {
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
+    @Transactional
     public ReviewBoardViewEntity getReviewBoardById(Integer id) {
-        return reviewBoardPreviewRepository.findById(id).orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
+        ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).
+                orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
+        reviewBoardViewEntity.setViewCnt(reviewBoardViewEntity.getViewCnt() + 1);
+        reviewBoardViewEntity = reviewBoardPreviewRepository.save(reviewBoardViewEntity);
+        return reviewBoardViewEntity;
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
