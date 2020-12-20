@@ -60,4 +60,7 @@ public class ReviewBoardController {
     public List<ReviewBoardCommentEntity> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
         return reviewBoardCommentService.getCommentByPostId(postId);
     }
+
+    @GetMapping(value = "/me")
+    public List<ReviewBoardViewEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
 }
