@@ -82,4 +82,7 @@ public class FreeBoardController {
             @PathVariable(name = "commendId") Integer commentId) {
         return freeBoardCommentService.deleteComment(postId, commentId);
     }
+
+    @GetMapping(value = "/me")
+    public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
 }
