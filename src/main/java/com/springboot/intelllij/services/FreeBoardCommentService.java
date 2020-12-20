@@ -43,6 +43,11 @@ public class FreeBoardCommentService {
             commentEntity.setBundleId(comment.getBundleId());
             commentEntity.setDepth(COMMENT_OF_COMMENT_DEPTH);
             freeBoardCommentRepo.save(commentEntity);
+
+            FreeBoardCommentEntity parentEntity = freeBoardCommentRepo.findById(comment.getBundleId())
+                    .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+            parentEntity.increaseBundleSize();
+            freeBoardCommentRepo.save(parentEntity);
         } else {
             FreeBoardCommentEntity savedEntity = freeBoardCommentRepo.save(commentEntity);
             savedEntity.setBundleId(savedEntity.getId());
@@ -66,7 +71,7 @@ public class FreeBoardCommentService {
             if(commentsOfComment.isEmpty()) continue;
 
             for(int i = 0; i < commentsOfComment.size(); i++) {
-                if(i > COMMENT_MAX) break;
+                if(i >= COMMENT_MAX) break;
                 resultCommentList.add(commentsOfComment.get(i));
             }
         }
