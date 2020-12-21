@@ -47,8 +47,13 @@ public class FreeBoardService {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
+    @Transactional
     public FreeBoardViewEntity getFreeBoardById(Integer id) {
-        return freeBoardPreviewRepository.findById(id).orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
+        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).
+                orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
+        freeBoardViewEntity.setViewCnt(freeBoardViewEntity.getViewCnt() + 1);
+        freeBoardViewEntity = freeBoardPreviewRepository.save(freeBoardViewEntity);
+        return freeBoardViewEntity;
     }
 
     @Transactional
