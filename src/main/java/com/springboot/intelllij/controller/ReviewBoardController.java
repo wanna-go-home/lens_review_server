@@ -6,6 +6,7 @@ import com.springboot.intelllij.services.ReviewBoardCommentService;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +52,12 @@ public class ReviewBoardController {
         return reviewBoardService.addPostToReviewBoard(reviewBoardDto);
     }
 
+    @PostMapping(value = POST_LIKE)
+    public ResponseEntity<ReviewBoardEntity> postLiked(@PathVariable(name = "id") Integer id) {
+        ReviewBoardEntity reviewBoardEntity = reviewBoardService.postLiked(id);
+        return new ResponseEntity<>(reviewBoardEntity, HttpStatus.ACCEPTED);
+    }
+
     @PostMapping(value = POST_COMMENTS, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody ReviewBoardCommentEntity comment) {
@@ -62,9 +69,6 @@ public class ReviewBoardController {
     public List<ReviewBoardCommentEntity> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
         return reviewBoardCommentService.getCommentByPostId(postId);
     }
-
-//    @GetMapping(value = POST_AND_COMMENT_ID)
-//    public List<ReviewBoardCommentEntity> getReviewBoardA
 
     @PutMapping(value = POST_AND_COMMENT_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReviewBoardCommentEntity updateReviewBoardCommentById(

@@ -30,6 +30,14 @@ public class ReviewBoardService {
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
+    public ReviewBoardEntity postLiked(Integer id) {
+        ReviewBoardEntity reviewBoardEntity = reviewBoardRepo.findById(id).
+                orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
+        reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() + 1);
+        reviewBoardEntity = reviewBoardRepo.save(reviewBoardEntity);
+        return reviewBoardEntity;
+    }
+
     public ReviewBoardViewEntity getReviewBoardById(Integer id) {
         return reviewBoardPreviewRepository.findById(id).orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
     }

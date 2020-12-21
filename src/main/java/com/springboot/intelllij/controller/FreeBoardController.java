@@ -6,6 +6,7 @@ import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,12 @@ public class FreeBoardController {
         return freeBoardService.addPostToFreeBoard(freeBoard);
     }
 
+    @PostMapping(value = POST_LIKE)
+    public ResponseEntity<FreeBoardEntity> postLiked(@PathVariable(name = "id") Integer id) {
+        FreeBoardEntity freeBoardEntity = freeBoardService.postLiked(id);
+        return new ResponseEntity<>(freeBoardEntity, HttpStatus.ACCEPTED);
+    }
+
     @PostMapping(value = POST_COMMENTS, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentDTO comment) {
@@ -84,4 +91,5 @@ public class FreeBoardController {
             @PathVariable(name = "commendId") Integer commentId) {
         return freeBoardCommentService.deleteComment(postId, commentId);
     }
+
 }

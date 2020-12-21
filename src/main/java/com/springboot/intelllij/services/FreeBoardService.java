@@ -47,6 +47,14 @@ public class FreeBoardService {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
+    public FreeBoardEntity postLiked(Integer id) {
+        FreeBoardEntity freeBoardEntity = freeBoardRepo.findById(id).
+                orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
+        freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
+        freeBoardEntity = freeBoardRepo.save(freeBoardEntity);
+        return freeBoardEntity;
+    }
+
     public FreeBoardViewEntity getFreeBoardById(Integer id) {
         return freeBoardPreviewRepository.findById(id).orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
     }
