@@ -75,10 +75,10 @@ public class AccountService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
         AccountEntity account = userRepo.findById(user).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccount(user);
-        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccount(user);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByAccountId(user);
-        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByAccountId(user);
+        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
+        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByEmail(user);
+        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByEmail(user);
 
         int likeCount = 0;
         likeCount += reviewBoardEntities.stream().mapToInt(reviewBoardEntity -> reviewBoardEntity.getLikeCnt()).sum();

@@ -19,6 +19,6 @@ public class ReviewBoardPreviewService {
     public List<ReviewBoardViewEntity> getMyAllPreview() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
-        return reviewBoardPreviewRepo.findByAccount(user);
+        return reviewBoardPreviewRepo.findByEmail(user);
     }
 }
