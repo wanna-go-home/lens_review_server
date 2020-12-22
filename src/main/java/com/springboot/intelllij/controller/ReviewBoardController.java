@@ -51,13 +51,33 @@ public class ReviewBoardController {
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody ReviewBoardCommentEntity comment) {
-        comment.setPostId(id);
-        return reviewBoardCommentService.post(comment);
+    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentDTO comment) {
+        return reviewBoardCommentService.post(id, comment);
     }
 
     @GetMapping(value = "/{id}/comments")
     public List<ReviewBoardCommentEntity> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
         return reviewBoardCommentService.getCommentByPostId(postId);
+    }
+
+    @GetMapping(value = "/{id}/comment/{commendId}")
+    public List<ReviewBoardCommentEntity> getReviewBoardAllComments(@PathVariable(name = "id") Integer postId,
+                                                                @PathVariable(name = "commendId") Integer commentId) {
+        return reviewBoardCommentService.getAllCommentByPostId(postId,commentId);
+    }
+
+    @PutMapping(value = "/{id}/comment/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReviewBoardCommentEntity updateReviewBoardCommentById(
+            @PathVariable(name = "id") Integer postId,
+            @PathVariable(name = "commendId") Integer commentId,
+            @RequestBody String content) {
+        return reviewBoardCommentService.updateComment(postId, commentId, content);
+    }
+
+    @DeleteMapping(value = "/{id}/comment/{commendId}")
+    public ResponseEntity deleteReviewBoardCommentById(
+            @PathVariable(name = "id") Integer postId,
+            @PathVariable(name = "commendId") Integer commentId) {
+        return reviewBoardCommentService.deleteComment(postId, commentId);
     }
 }

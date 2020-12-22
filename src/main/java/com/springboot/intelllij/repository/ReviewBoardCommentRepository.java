@@ -10,5 +10,10 @@ public interface ReviewBoardCommentRepository extends JpaRepository<ReviewBoardC
 
     List<ReviewBoardCommentEntity> findByAccountId(String accountId);
 
+    List<ReviewBoardCommentEntity> findByPostIdAndDepth(Integer postId, Integer depth);
+
+    List<ReviewBoardCommentEntity> findByBundleIdAndDepth(Integer bundleId, Integer depth);
+
+
     void deleteByPostId(Integer postId);
 }

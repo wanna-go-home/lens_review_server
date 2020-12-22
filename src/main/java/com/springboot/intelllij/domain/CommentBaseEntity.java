@@ -34,4 +34,11 @@ public class CommentBaseEntity extends BaseEntity {
 
     @Column(name = "bundle_id")
     private Integer bundleId;
+
+    @Column(name = "bundle_size")
+    private Integer bundleSize = 0;
+
+    public void increaseBundleSize() {
+        this.bundleSize++;
+    }
 }
