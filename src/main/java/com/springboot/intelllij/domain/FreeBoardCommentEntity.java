@@ -13,10 +13,4 @@ import javax.persistence.Table;
 @Table(name = "free_board_comment")
 public class FreeBoardCommentEntity extends CommentBaseEntity {
 
-    @Column(name = "bundle_size")
-    private Integer bundleSize = 0;
-
-    public void increaseBundleSize() {
-        this.bundleSize++;
-    }
 }

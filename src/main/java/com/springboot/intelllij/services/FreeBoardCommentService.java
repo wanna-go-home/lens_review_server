@@ -28,7 +28,7 @@ public class FreeBoardCommentService {
     private final int COMMENT_DEPTH = 0;
     private final int COMMENT_OF_COMMENT_DEPTH = 1;
 
-    public ResponseEntity post(Integer postId,CommentDTO comment) {
+    public ResponseEntity post(Integer postId, CommentDTO comment) {
         FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
