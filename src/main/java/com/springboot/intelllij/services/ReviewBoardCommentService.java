@@ -37,7 +37,7 @@ public class ReviewBoardCommentService {
         commentEntity.setPostId(postId);
 
         commentEntity.setCreatedAt(ZonedDateTime.now());
-        commentEntity.setAccountId(user);
+        commentEntity.setEmail(user);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());
