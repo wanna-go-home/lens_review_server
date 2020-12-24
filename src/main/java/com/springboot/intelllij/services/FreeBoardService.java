@@ -38,7 +38,7 @@ public class FreeBoardService {
         String user = principal.toString();
         FreeBoardEntity entity = new FreeBoardEntity();
 
-        entity.setAccount(user);
+        entity.setEmail(user);
         entity.setContent(freeBoard.getContent());
         entity.setCreatedAt(ZonedDateTime.now());
         entity.setTitle(freeBoard.getTitle());
