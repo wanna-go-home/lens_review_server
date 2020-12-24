@@ -8,7 +8,7 @@ import java.util.List;
 public interface ReviewBoardCommentRepository extends JpaRepository<ReviewBoardCommentEntity, Integer> {
     List<ReviewBoardCommentEntity> findByPostId(Integer integer);
 
-    List<ReviewBoardCommentEntity> findByAccountId(String accountId);
+    List<ReviewBoardCommentEntity> findByEmail(String email);
 
     List<ReviewBoardCommentEntity> findByPostIdAndDepth(Integer postId, Integer depth);
 

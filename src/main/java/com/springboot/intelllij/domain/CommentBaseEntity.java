@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @Setter
 public class CommentBaseEntity extends BaseEntity {
     @Column(name = "account_id")
-    private String accountId;
+    private String email;
 
     @Column(name = "post_id")
     private Integer postId;

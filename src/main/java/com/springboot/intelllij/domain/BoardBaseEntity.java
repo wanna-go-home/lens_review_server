@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 public class BoardBaseEntity extends BaseEntity {
     @Column(name = "account_id")
-    private String account;
+    private String email;
 
     @Column(name = "title")
     private String title;
@@ -37,8 +37,8 @@ public class BoardBaseEntity extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("UTC"));
 
-    public BoardBaseEntity(String account, String title, String content) {
-        this.account = account;
+    public BoardBaseEntity(String email, String title, String content) {
+        this.email = email;
         this.title = title;
         this.content = content;
     }
