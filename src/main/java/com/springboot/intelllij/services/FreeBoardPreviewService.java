@@ -19,6 +19,6 @@ public class FreeBoardPreviewService {
     public List<FreeBoardViewEntity> getMyAllPreview() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
-        return freeBoardPreviewRepo.findByAccount(user);
+        return freeBoardPreviewRepo.findByEmail(user);
     }
 }
