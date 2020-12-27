@@ -117,8 +117,8 @@ public class AccountService {
         result.sort(new Comparator<CommentBaseEntity>() {
             @Override
             public int compare(CommentBaseEntity o1, CommentBaseEntity o2) {
-                if(o1.getCreatedAt().isBefore(o2.getCreatedAt())) return -1;
-                else if(o2.getCreatedAt().isBefore(o1.getCreatedAt())) return 1;
+                if(o1.getCreatedAt().isBefore(o2.getCreatedAt())) return 1;
+                else if(o2.getCreatedAt().isBefore(o1.getCreatedAt())) return -1;
                 else return 0;
             }
         });
