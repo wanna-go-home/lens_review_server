@@ -2,6 +2,7 @@ package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.AccountEntity;
+import com.springboot.intelllij.domain.CommentBaseEntity;
 import com.springboot.intelllij.domain.UserInfoDTO;
 import com.springboot.intelllij.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,10 @@ public class UserController {
     @GetMapping(value = "/me")
     public UserInfoDTO userInfo() {
         return accountService.getUserInfo();
+    }
+
+    @GetMapping(value = "/comments/me")
+    public List<CommentBaseEntity> userComments() {
+        return accountService.getUserComments();
     }
 }

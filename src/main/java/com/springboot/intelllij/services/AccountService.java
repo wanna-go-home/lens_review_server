@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
@@ -31,7 +33,7 @@ public class AccountService {
     FreeBoardCommentRepository freeCommentRepo;
 
     @Autowired
-    ReviewBoardCommentRepository reviewCOmmentRepo;
+    ReviewBoardCommentRepository reviewCommentRepo;
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
@@ -84,7 +86,7 @@ public class AccountService {
         AccountEntity account = userRepo.findById(user).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
         List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCommentRepo.findByEmail(user);
         List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByEmail(user);
 
         int likeCount = 0;
@@ -101,6 +103,27 @@ public class AccountService {
         userInfo.setNickName(account.getNickname());
 
         return userInfo;
+    }
+
+    public List<CommentBaseEntity> getUserComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+
+        result.addAll(freeboardComments);
+        result.addAll(reviewBoarcComments);
+        result.sort(new Comparator<CommentBaseEntity>() {
+            @Override
+            public int compare(CommentBaseEntity o1, CommentBaseEntity o2) {
+                if(o1.getCreatedAt().isBefore(o2.getCreatedAt())) return -1;
+                else if(o2.getCreatedAt().isBefore(o1.getCreatedAt())) return 1;
+                else return 0;
+            }
+        });
+
+        return result;
     }
 
 }
