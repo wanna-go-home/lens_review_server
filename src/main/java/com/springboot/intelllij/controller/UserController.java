@@ -54,8 +54,13 @@ public class UserController {
         return accountService.getUserInfo();
     }
 
-    @GetMapping(value = "/comments/me")
-    public List<CommentBaseEntity> userComments() {
-        return accountService.getUserComments();
+    @GetMapping(value = "/article/comments/me")
+    public List<CommentBaseEntity> userArticleComments() {
+        return accountService.getUserArticleComments();
+    }
+
+    @GetMapping(value = "/review/comments/me")
+    public List<CommentBaseEntity> userReviewComments() {
+        return accountService.getUserReviewComments();
     }
 }

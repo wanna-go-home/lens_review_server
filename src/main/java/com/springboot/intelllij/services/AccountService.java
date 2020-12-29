@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
+import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -105,23 +106,26 @@ public class AccountService {
         return userInfo;
     }
 
-    public List<CommentBaseEntity> getUserComments() {
+    public List<CommentBaseEntity> getUserArticleComments() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
         List<CommentBaseEntity> result = new ArrayList<>();
         List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
-        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
 
         result.addAll(freeboardComments);
+        result.sort(new CommentComparator());
+
+        return result;
+    }
+
+    public List<CommentBaseEntity> getUserReviewComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+
         result.addAll(reviewBoarcComments);
-        result.sort(new Comparator<CommentBaseEntity>() {
-            @Override
-            public int compare(CommentBaseEntity o1, CommentBaseEntity o2) {
-                if(o1.getCreatedAt().isBefore(o2.getCreatedAt())) return 1;
-                else if(o2.getCreatedAt().isBefore(o1.getCreatedAt())) return -1;
-                else return 0;
-            }
-        });
+        result.sort(new CommentComparator());
 
         return result;
     }
