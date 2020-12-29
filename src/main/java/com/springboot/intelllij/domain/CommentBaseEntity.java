@@ -2,16 +2,19 @@ package com.springboot.intelllij.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.xml.stream.events.Comment;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor
 public class CommentBaseEntity extends BaseEntity {
     @Column(name = "account_id")
     private String email;
@@ -40,5 +43,16 @@ public class CommentBaseEntity extends BaseEntity {
 
     public void increaseBundleSize() {
         this.bundleSize++;
+    }
+
+    public CommentBaseEntity(CommentBaseEntity commentBase) {
+        this.email = commentBase.getEmail();
+        this.postId = commentBase.getPostId();
+        this.content = commentBase.getContent();
+        this.likeCnt = commentBase.getLikeCnt();
+        this.createdAt = commentBase.getCreatedAt();
+        this.depth = commentBase.getDepth();
+        this.bundleId = commentBase.getBundleId();
+        this.bundleSize = commentBase.getBundleSize();
     }
 }

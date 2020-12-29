@@ -4,6 +4,7 @@ import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.StringValidationUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,7 @@ public class AccountService {
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
     public ResponseEntity deleteUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
+        String user = UserUtils.getUserStringFromSecurityContextHolder();
         userRepo.deleteById(user);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -79,9 +79,9 @@ public class AccountService {
 
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        AccountEntity account = userRepo.findById(user).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        AccountEntity account = UserUtils.getUserEntity();
+        String user = account.getAccountEmail();
+
         List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
         List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
         List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByEmail(user);
