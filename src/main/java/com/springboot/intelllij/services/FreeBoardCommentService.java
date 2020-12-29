@@ -2,27 +2,32 @@ package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.CommentDTO;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
+import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
+import com.springboot.intelllij.repository.FreeBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
 
 @Service
 public class FreeBoardCommentService {
 
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepo;
+
+    @Autowired
+    FreeBoardRepository freeBoardRepo;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -32,6 +37,7 @@ public class FreeBoardCommentService {
         FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
+        FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
@@ -53,6 +59,10 @@ public class FreeBoardCommentService {
             savedEntity.setBundleId(savedEntity.getId());
             freeBoardCommentRepo.save(savedEntity);
         }
+
+        article.increaseReplyCnt();
+        freeBoardRepo.save(article);
+
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

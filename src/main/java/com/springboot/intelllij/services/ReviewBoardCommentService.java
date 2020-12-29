@@ -3,8 +3,10 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.CommentDTO;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
+import com.springboot.intelllij.domain.ReviewBoardEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
+import com.springboot.intelllij.repository.ReviewBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
 
 @Service
 public class ReviewBoardCommentService {
 
     @Autowired
     ReviewBoardCommentRepository reviewBoardCommentRepo;
+
+    @Autowired
+    ReviewBoardRepository reviewBoardRepo;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -32,6 +38,7 @@ public class ReviewBoardCommentService {
         ReviewBoardCommentEntity commentEntity = new ReviewBoardCommentEntity();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = principal.toString();
+        ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
@@ -53,6 +60,10 @@ public class ReviewBoardCommentService {
             savedEntity.setBundleId(savedEntity.getId());
             reviewBoardCommentRepo.save(savedEntity);
         }
+
+        review.increaseReplyCnt();
+        reviewBoardRepo.save(review);
+        
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
