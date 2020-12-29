@@ -42,4 +42,8 @@ public class BoardBaseEntity extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void increaseReplyCnt() {
+        this.replyCnt++;
+    }
 }

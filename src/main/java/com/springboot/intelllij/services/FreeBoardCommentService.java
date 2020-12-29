@@ -4,9 +4,11 @@ import com.springboot.intelllij.domain.AccountEntity;
 import com.springboot.intelllij.domain.CommentInputDTO;
 import com.springboot.intelllij.domain.CommentOutputDTO;
 import com.springboot.intelllij.domain.FreeBoardCommentEntity;
+import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import com.springboot.intelllij.utils.UserUtils;
+import com.springboot.intelllij.repository.FreeBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
 
 @Service
 public class FreeBoardCommentService {
 
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepo;
+
+    @Autowired
+    FreeBoardRepository freeBoardRepo;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -32,6 +38,7 @@ public class FreeBoardCommentService {
     public ResponseEntity post(Integer postId, CommentInputDTO comment) {
         FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
         String user = UserUtils.getUserStringFromSecurityContextHolder();
+        FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
@@ -53,6 +60,10 @@ public class FreeBoardCommentService {
             savedEntity.setBundleId(savedEntity.getId());
             freeBoardCommentRepo.save(savedEntity);
         }
+
+        article.increaseReplyCnt();
+        freeBoardRepo.save(article);
+
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
