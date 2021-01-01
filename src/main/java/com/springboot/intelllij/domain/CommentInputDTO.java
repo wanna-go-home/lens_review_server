@@ -11,7 +11,7 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentInputDTO {
     Integer bundleId;
     String content;
 }
