@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
+import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
@@ -31,7 +34,7 @@ public class AccountService {
     FreeBoardCommentRepository freeCommentRepo;
 
     @Autowired
-    ReviewBoardCommentRepository reviewCOmmentRepo;
+    ReviewBoardCommentRepository reviewCommentRepo;
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
@@ -84,7 +87,7 @@ public class AccountService {
         AccountEntity account = userRepo.findById(user).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
         List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCommentRepo.findByEmail(user);
         List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByEmail(user);
 
         int likeCount = 0;
@@ -101,6 +104,30 @@ public class AccountService {
         userInfo.setNickName(account.getNickname());
 
         return userInfo;
+    }
+
+    public List<CommentBaseEntity> getUserArticleComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
+
+        result.addAll(freeboardComments);
+        result.sort(new CommentComparator());
+
+        return result;
+    }
+
+    public List<CommentBaseEntity> getUserReviewComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+
+        result.addAll(reviewBoarcComments);
+        result.sort(new CommentComparator());
+
+        return result;
     }
 
 }
