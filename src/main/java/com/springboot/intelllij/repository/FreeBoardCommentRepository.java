@@ -12,7 +12,7 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
 
     List<FreeBoardCommentEntity> findByBundleIdAndDepth(Integer bundleId, Integer depth);
 
-    List<FreeBoardCommentEntity> findByEmail(String email);
+    List<FreeBoardCommentEntity> findByAccountId(Integer accountId);
 
     void deleteByPostId(Integer postId);
 }

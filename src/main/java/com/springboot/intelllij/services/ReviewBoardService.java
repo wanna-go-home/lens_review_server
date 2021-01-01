@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.*;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.BOARD_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
 
 @Service
 public class ReviewBoardService {
@@ -40,8 +41,8 @@ public class ReviewBoardService {
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto,principal.toString());
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto, accountId);
         reviewBoardRepo.save(reviewBoard);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }

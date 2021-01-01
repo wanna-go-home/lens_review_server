@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "review_board_view")
 public class ReviewBoardViewEntity extends BoardBaseEntity {
-    @Column(name = "name")
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "lens_id")

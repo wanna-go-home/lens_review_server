@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FreeBoardRepository extends JpaRepository<FreeBoardEntity, Integer> {
-    List<FreeBoardEntity> findByEmail(String email);
+    List<FreeBoardEntity> findByAccountId(Integer accountId);
 
     @Modifying
     @Query("update FreeBoardEntity e set e.title = :title, e.content = :content where e.id = :id")

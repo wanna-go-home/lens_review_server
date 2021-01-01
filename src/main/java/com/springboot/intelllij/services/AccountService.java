@@ -36,14 +36,13 @@ public class AccountService {
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
     public ResponseEntity deleteUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        userRepo.deleteById(user);
+        Integer accountId = (Integer) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        userRepo.deleteById(accountId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public ResponseEntity checkId(String id) {
-        if (userRepo.findById(id).isPresent() || !StringValidationUtils.isValidEmail(id)) {
+    public ResponseEntity checkId(String email) {
+        if (userRepo.findByAccountEmail(email).isPresent() || !StringValidationUtils.isValidEmail(email)) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -79,13 +78,12 @@ public class AccountService {
 
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        AccountEntity account = userRepo.findById(user).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
-        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByEmail(user);
-        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByEmail(user);
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        AccountEntity account = userRepo.findById(accountId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccountId(accountId);
+        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccountId(accountId);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByAccountId(accountId);
+        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByAccountId(accountId);
 
         int likeCount = 0;
         likeCount += reviewBoardEntities.stream().mapToInt(reviewBoardEntity -> reviewBoardEntity.getLikeCnt()).sum();

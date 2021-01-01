@@ -34,16 +34,15 @@ public class FreeBoardCommentService {
     private final int COMMENT_OF_COMMENT_DEPTH = 1;
 
     public ResponseEntity post(Integer postId, CommentDTO comment) {
-        FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
         FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
-
         commentEntity.setCreatedAt(ZonedDateTime.now());
-        commentEntity.setEmail(user);
+        commentEntity.setAccountId(accountId);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());
@@ -67,7 +66,7 @@ public class FreeBoardCommentService {
     }
 
     public List<FreeBoardCommentEntity> getCommentByPostId(Integer postId) {
-        List<FreeBoardCommentEntity> comments = freeBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH);
+        List<FreeBoardCommentEntity> comments = freeBoardCommentRepo.findByPostIdAndDepth(postId, COMMENT_DEPTH);
         List<FreeBoardCommentEntity> resultCommentList = new ArrayList<>();
 
         Comparator<FreeBoardCommentEntity> comparator = Comparator.comparing(FreeBoardCommentEntity::getCreatedAt);
@@ -75,7 +74,9 @@ public class FreeBoardCommentService {
         comments.sort(comparator);
 
         for(FreeBoardCommentEntity commentEntity : comments) {
-            List<FreeBoardCommentEntity> commentsOfComment = freeBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(),COMMENT_OF_COMMENT_DEPTH);
+            List<FreeBoardCommentEntity> commentsOfComment = freeBoardCommentRepo.findByBundleIdAndDepth(
+                    commentEntity.getId(), COMMENT_OF_COMMENT_DEPTH
+            );
             resultCommentList.add(commentEntity);
 
             if(commentsOfComment.isEmpty()) continue;
@@ -93,7 +94,9 @@ public class FreeBoardCommentService {
         FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
                 .stream().filter(freeBoardCommentEntity -> freeBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
-        List<FreeBoardCommentEntity> commentsOfComment = freeBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(),COMMENT_OF_COMMENT_DEPTH);
+        List<FreeBoardCommentEntity> commentsOfComment = freeBoardCommentRepo.findByBundleIdAndDepth(
+                originalComment.getId(), COMMENT_OF_COMMENT_DEPTH
+        );
         List<FreeBoardCommentEntity> resultCommentList = new ArrayList<>();
 
         resultCommentList.add(originalComment);

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewBoardPreviewRepository extends JpaRepository<ReviewBoardViewEntity, Integer> {
 
-    List<ReviewBoardViewEntity> findByEmail(String email);
+    List<ReviewBoardViewEntity> findByAccountId(Integer AccountId);
 }

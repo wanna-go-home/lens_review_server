@@ -1,7 +1,6 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.CommentDTO;
-import com.springboot.intelllij.domain.FreeBoardCommentEntity;
 import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
 import com.springboot.intelllij.domain.ReviewBoardEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
@@ -36,15 +35,13 @@ public class ReviewBoardCommentService {
 
     public ResponseEntity post(Integer postId, CommentDTO comment) {
         ReviewBoardCommentEntity commentEntity = new ReviewBoardCommentEntity();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
         ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
-
         commentEntity.setCreatedAt(ZonedDateTime.now());
-        commentEntity.setEmail(user);
+        commentEntity.setAccountId(accountId);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());
