@@ -29,7 +29,7 @@ public class ReviewBoardController {
     public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
 
     @GetMapping(value = "/{id}")
-    public ReviewBoardViewEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
+    public ReviewBoardViewWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.getReviewBoardById(id);
     }
 
@@ -51,17 +51,17 @@ public class ReviewBoardController {
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentDTO comment) {
+    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
         return reviewBoardCommentService.post(id, comment);
     }
 
     @GetMapping(value = "/{id}/comments")
-    public List<ReviewBoardCommentEntity> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
+    public List<CommentOutputDTO> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
         return reviewBoardCommentService.getCommentByPostId(postId);
     }
 
     @GetMapping(value = "/{id}/comment/{commendId}")
-    public List<ReviewBoardCommentEntity> getReviewBoardAllComments(@PathVariable(name = "id") Integer postId,
+    public List<CommentOutputDTO> getReviewBoardAllComments(@PathVariable(name = "id") Integer postId,
                                                                 @PathVariable(name = "commendId") Integer commentId) {
         return reviewBoardCommentService.getAllCommentByPostId(postId,commentId);
     }

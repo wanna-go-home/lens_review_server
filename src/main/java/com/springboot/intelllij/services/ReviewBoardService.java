@@ -1,9 +1,8 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.ReviewBoardDto;
-import com.springboot.intelllij.domain.ReviewBoardEntity;
-import com.springboot.intelllij.domain.ReviewBoardViewEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
+import com.springboot.intelllij.repository.LensRepository;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
 import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
@@ -25,6 +24,8 @@ public class ReviewBoardService {
     @Autowired
     private ReviewBoardRepository reviewBoardRepo;
     @Autowired
+    private LensRepository lensRepository;
+    @Autowired
     private ReviewBoardPreviewRepository reviewBoardPreviewRepository;
     @Autowired
     private ReviewBoardCommentRepository reviewBoardCommentRepository;
@@ -32,12 +33,15 @@ public class ReviewBoardService {
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
     @Transactional
-    public ReviewBoardViewEntity getReviewBoardById(Integer id) {
+    public ReviewBoardViewWithLensInfoEntity getReviewBoardById(Integer id) {
         ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).
                 orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
-        reviewBoardViewEntity.setViewCnt(reviewBoardViewEntity.getViewCnt() + 1);
+        reviewBoardViewEntity.increaseReplyCnt();
         reviewBoardViewEntity = reviewBoardPreviewRepository.save(reviewBoardViewEntity);
-        return reviewBoardViewEntity;
+        LensEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
+                .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
+
+        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,lensInfo);
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {

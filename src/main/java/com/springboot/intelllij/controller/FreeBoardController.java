@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(RESTPath.FREE_BOARD)
@@ -53,17 +52,17 @@ public class FreeBoardController {
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentDTO comment) {
+    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
         return freeBoardCommentService.post(id, comment);
     }
 
     @GetMapping(value = "/{id}/comments")
-    public List<FreeBoardCommentEntity> getFreeBoardComment(@PathVariable(name = "id") Integer postId) {
+    public List<CommentOutputDTO> getFreeBoardComment(@PathVariable(name = "id") Integer postId) {
         return freeBoardCommentService.getCommentByPostId(postId);
     }
 
     @GetMapping(value = "/{id}/comment/{commendId}")
-    public List<FreeBoardCommentEntity> getFreeBoardAllComments(@PathVariable(name = "id") Integer postId,
+    public List<CommentOutputDTO> getFreeBoardAllComments(@PathVariable(name = "id") Integer postId,
                                                             @PathVariable(name = "commendId") Integer commentId) {
         return freeBoardCommentService.getAllCommentByPostId(postId,commentId);
     }

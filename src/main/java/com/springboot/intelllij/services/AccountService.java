@@ -1,9 +1,10 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.*;
-import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
+import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
 
 @Service
 public class AccountService {
@@ -31,13 +31,12 @@ public class AccountService {
     FreeBoardCommentRepository freeCommentRepo;
 
     @Autowired
-    ReviewBoardCommentRepository reviewCOmmentRepo;
+    ReviewBoardCommentRepository reviewCommentRepo;
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
     public ResponseEntity deleteUser() {
-        Integer accountId = (Integer) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        AccountEntity accountEntity = userRepo.findById(accountId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        AccountEntity accountEntity = UserUtils.getUserEntity();
 
         accountEntity.setAccountEmail(null);
         accountEntity.setAccountPw(null);
@@ -85,8 +84,8 @@ public class AccountService {
 
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
-        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
-        AccountEntity account = userRepo.findById(accountId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+
         List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccountId(accountId);
         List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccountId(accountId);
         List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByAccountId(accountId);
@@ -106,6 +105,30 @@ public class AccountService {
         userInfo.setNickName(account.getNickname());
 
         return userInfo;
+    }
+
+    public List<CommentBaseEntity> getUserArticleComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
+
+        result.addAll(freeboardComments);
+        result.sort(new CommentComparator());
+
+        return result;
+    }
+
+    public List<CommentBaseEntity> getUserReviewComments() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = principal.toString();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+
+        result.addAll(reviewBoarcComments);
+        result.sort(new CommentComparator());
+
+        return result;
     }
 
 }

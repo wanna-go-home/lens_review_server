@@ -1,15 +1,13 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.CommentDTO;
-import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
-import com.springboot.intelllij.domain.ReviewBoardEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -33,11 +31,11 @@ public class ReviewBoardCommentService {
     private final int COMMENT_DEPTH = 0;
     private final int CHILD_COMMENT_DEPTH = 1;
 
-    public ResponseEntity post(Integer postId, CommentDTO comment) {
+    public ResponseEntity post(Integer postId, CommentInputDTO comment) {
         ReviewBoardCommentEntity commentEntity = new ReviewBoardCommentEntity();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
-        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
         commentEntity.setCreatedAt(ZonedDateTime.now());
@@ -64,40 +62,42 @@ public class ReviewBoardCommentService {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    public List<ReviewBoardCommentEntity> getCommentByPostId(Integer postId) {
+    public List<CommentOutputDTO> getCommentByPostId(Integer postId) {
         List<ReviewBoardCommentEntity> comments = reviewBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH);
-        List<ReviewBoardCommentEntity> resultCommentList = new ArrayList<>();
+        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
+        AccountEntity user = UserUtils.getUserEntity();
 
         Comparator<ReviewBoardCommentEntity> comparator = Comparator.comparing(ReviewBoardCommentEntity::getCreatedAt);
         comparator = comparator.thenComparingInt(ReviewBoardCommentEntity::getBundleId);
         comments.sort(comparator);
 
         for(ReviewBoardCommentEntity commentEntity : comments) {
-            List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(),CHILD_COMMENT_DEPTH);
-            resultCommentList.add(commentEntity);
+            List<ReviewBoardCommentEntity> childCommentList = reviewBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(),CHILD_COMMENT_DEPTH);
+            resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
 
-            if(commentsOfComment.isEmpty()) continue;
+            if(childCommentList.isEmpty()) continue;
 
-            for(int i = 0; i < commentsOfComment.size(); i++) {
+            for(int i = 0; i < childCommentList.size(); i++) {
                 if(i >= COMMENT_MAX) break;
-                resultCommentList.add(commentsOfComment.get(i));
+                resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), user.getNickname()));
             }
         }
 
         return resultCommentList;
     }
 
-    public List<ReviewBoardCommentEntity> getAllCommentByPostId(Integer postId, Integer commentId) {
+    public List<CommentOutputDTO> getAllCommentByPostId(Integer postId, Integer commentId) {
         ReviewBoardCommentEntity originalComment = reviewBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
                 .stream().filter(reviewBoardCommentEntity -> reviewBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(),CHILD_COMMENT_DEPTH);
-        List<ReviewBoardCommentEntity> resultCommentList = new ArrayList<>();
+        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
+        AccountEntity user = UserUtils.getUserEntity();
 
-        resultCommentList.add(originalComment);
+        resultCommentList.add(new CommentOutputDTO(originalComment, user.getNickname()));
 
         commentsOfComment.forEach(bundle -> {
-            resultCommentList.add(bundle);
+            resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
         });
 
         return resultCommentList;
