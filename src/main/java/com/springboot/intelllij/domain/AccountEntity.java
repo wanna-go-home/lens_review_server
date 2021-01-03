@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -12,6 +14,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "account")
 public class AccountEntity {
 
@@ -31,4 +35,7 @@ public class AccountEntity {
 
     @Column(name = "phone_num")
     private String phoneNum;
+
+    @Column(name = "active")
+    private boolean active;
 }

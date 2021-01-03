@@ -37,7 +37,14 @@ public class AccountService {
 
     public ResponseEntity deleteUser() {
         Integer accountId = (Integer) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        userRepo.deleteById(accountId);
+        AccountEntity accountEntity = userRepo.findById(accountId).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        accountEntity.setAccountEmail(null);
+        accountEntity.setAccountPw(null);
+        accountEntity.setPhoneNum(null);
+        accountEntity.setActive(false);
+        userRepo.save(accountEntity);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
