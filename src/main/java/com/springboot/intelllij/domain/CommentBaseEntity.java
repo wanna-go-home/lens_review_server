@@ -49,7 +49,7 @@ public class CommentBaseEntity extends BaseEntity {
 
     public CommentBaseEntity(CommentBaseEntity commentBase) {
         this.setId(commentBase.getId());
-        this.email = commentBase.getEmail();
+        this.accountId = commentBase.getAccountId();
         this.postId = commentBase.getPostId();
         this.content = commentBase.getContent();
         this.likeCnt = commentBase.getLikeCnt();

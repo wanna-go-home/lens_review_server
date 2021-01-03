@@ -84,11 +84,12 @@ public class AccountService {
 
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        AccountEntity account = UserUtils.getUserEntity();
+        int accountId = account.getId();
 
         List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccountId(accountId);
         List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccountId(accountId);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCOmmentRepo.findByAccountId(accountId);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCommentRepo.findByAccountId(accountId);
         List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByAccountId(accountId);
 
         int likeCount = 0;
@@ -108,10 +109,9 @@ public class AccountService {
     }
 
     public List<CommentBaseEntity> getUserArticleComments() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<CommentBaseEntity> result = new ArrayList<>();
-        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(accountId);
 
         result.addAll(freeboardComments);
         result.sort(new CommentComparator());
@@ -120,10 +120,9 @@ public class AccountService {
     }
 
     public List<CommentBaseEntity> getUserReviewComments() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<CommentBaseEntity> result = new ArrayList<>();
-        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(accountId);
 
         result.addAll(reviewBoarcComments);
         result.sort(new CommentComparator());
