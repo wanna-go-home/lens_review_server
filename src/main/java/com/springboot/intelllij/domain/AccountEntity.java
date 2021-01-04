@@ -37,5 +37,5 @@ public class AccountEntity {
     private String phoneNum;
 
     @Column(name = "active")
-    private boolean active;
+    private boolean active = true;
 }

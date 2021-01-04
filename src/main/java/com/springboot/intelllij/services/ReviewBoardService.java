@@ -40,7 +40,7 @@ public class ReviewBoardService {
         LensEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
 
-        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,lensInfo);
+        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {

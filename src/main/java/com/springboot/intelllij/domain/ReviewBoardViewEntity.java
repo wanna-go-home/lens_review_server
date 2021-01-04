@@ -21,6 +21,7 @@ public class ReviewBoardViewEntity extends BoardBaseEntity {
     private Integer lensId;
 
     public ReviewBoardViewEntity(ReviewBoardViewEntity reviewBoardEntity) {
+        this.setId(reviewBoardEntity.getId());
         this.setAccountId(reviewBoardEntity.getAccountId());
         this.setTitle(reviewBoardEntity.getTitle());
         this.setContent(reviewBoardEntity.getContent());
