@@ -1,18 +1,13 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.AccountEntity;
-import com.springboot.intelllij.domain.CommentInputDTO;
-import com.springboot.intelllij.domain.CommentOutputDTO;
-import com.springboot.intelllij.domain.ReviewBoardCommentEntity;
-import com.springboot.intelllij.domain.ReviewBoardEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
-import com.springboot.intelllij.utils.UserUtils;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -38,14 +33,13 @@ public class ReviewBoardCommentService {
 
     public ResponseEntity post(Integer postId, CommentInputDTO comment) {
         ReviewBoardCommentEntity commentEntity = new ReviewBoardCommentEntity();
-        String user = UserUtils.getUserStringFromSecurityContextHolder();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
-
         commentEntity.setCreatedAt(ZonedDateTime.now());
-        commentEntity.setEmail(user);
+        commentEntity.setAccountId(accountId);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());

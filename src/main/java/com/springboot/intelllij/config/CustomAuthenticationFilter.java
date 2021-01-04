@@ -28,7 +28,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Map<String,String> jsonMap = new Gson().fromJson(body,HashMap.class);
         authRequest = new UsernamePasswordAuthenticationToken(jsonMap.get("account"), jsonMap.get("pw"));
-        setDetails(request,authRequest);
+        setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 }

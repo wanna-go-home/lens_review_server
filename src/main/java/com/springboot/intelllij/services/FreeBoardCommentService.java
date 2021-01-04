@@ -1,14 +1,10 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.AccountEntity;
-import com.springboot.intelllij.domain.CommentInputDTO;
-import com.springboot.intelllij.domain.CommentOutputDTO;
-import com.springboot.intelllij.domain.FreeBoardCommentEntity;
-import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
-import com.springboot.intelllij.utils.UserUtils;
 import com.springboot.intelllij.repository.FreeBoardRepository;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +33,13 @@ public class FreeBoardCommentService {
 
     public ResponseEntity post(Integer postId, CommentInputDTO comment) {
         FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
-        String user = UserUtils.getUserStringFromSecurityContextHolder();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         commentEntity.setContent(comment.getContent());
         commentEntity.setPostId(postId);
-
         commentEntity.setCreatedAt(ZonedDateTime.now());
-        commentEntity.setEmail(user);
+        commentEntity.setAccountId(accountId);
 
         if(comment.getBundleId() != null) {
             commentEntity.setBundleId(comment.getBundleId());

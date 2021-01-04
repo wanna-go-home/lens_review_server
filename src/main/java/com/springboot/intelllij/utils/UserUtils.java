@@ -25,12 +25,16 @@ public class UserUtils {
     }
 
     public static AccountEntity getUserEntity() {
-        AccountEntity user = accountRepo.findById(getUserStringFromSecurityContextHolder()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        AccountEntity user = accountRepo.findById(getUserIdFromSecurityContextHolder()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return user;
     }
 
     public static String getUserStringFromSecurityContextHolder() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.toString();
+    }
+
+    public static Integer getUserIdFromSecurityContextHolder() {
+        return (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
     }
 }

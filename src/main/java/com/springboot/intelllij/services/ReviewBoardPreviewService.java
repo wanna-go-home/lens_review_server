@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,9 +24,8 @@ public class ReviewBoardPreviewService {
     }
 
     public List<ReviewBoardViewEntity> getMyAllPreview() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        List<ReviewBoardViewEntity> result = reviewBoardPreviewRepo.findByEmail(user);
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        List<ReviewBoardViewEntity> result = reviewBoardPreviewRepo.findByAccountId(accountId);
 
         result.sort(new BoardComparator());
 

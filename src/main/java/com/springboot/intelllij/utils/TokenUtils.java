@@ -49,7 +49,12 @@ public class TokenUtils {
 
     public static String getUserAccount(String token) {
         Claims claims = getClaimsFromToken(token);
-        return claims.get("id").toString();
+        return claims.get("email").toString();
+    }
+
+    public static Integer getUserId(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return Integer.parseInt(claims.get("id").toString());
     }
 
     private static Claims getClaimsFromToken(String token) {
@@ -66,9 +71,10 @@ public class TokenUtils {
     }
 
     private Map<String, Object> createClaims(AccountEntity account) {
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("id",account.getAccountEmail());
-        claims.put("nickname",account.getNickname());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", account.getAccountEmail());
+        claims.put("nickname", account.getNickname());
+        claims.put("id", account.getId());
         return claims;
     }
 

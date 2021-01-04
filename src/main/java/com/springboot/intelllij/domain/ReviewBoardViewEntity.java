@@ -14,14 +14,15 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "review_board_view")
 public class ReviewBoardViewEntity extends BoardBaseEntity {
-    @Column(name = "name")
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "lens_id")
     private Integer lensId;
 
     public ReviewBoardViewEntity(ReviewBoardViewEntity reviewBoardEntity) {
-        this.setEmail(reviewBoardEntity.getEmail());
+        this.setId(reviewBoardEntity.getId());
+        this.setAccountId(reviewBoardEntity.getAccountId());
         this.setTitle(reviewBoardEntity.getTitle());
         this.setContent(reviewBoardEntity.getContent());
         this.setViewCnt(reviewBoardEntity.getViewCnt());

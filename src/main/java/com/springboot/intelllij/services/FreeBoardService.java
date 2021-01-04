@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.BOARD_NOT_FOUND;
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
@@ -34,11 +33,10 @@ public class FreeBoardService {
     public List<FreeBoardEntity> getAllPosts() { return freeBoardRepo.findAll(); }
 
     public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        FreeBoardEntity entity = new FreeBoardEntity();
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-        entity.setEmail(user);
+        FreeBoardEntity entity = new FreeBoardEntity();
+        entity.setAccountId(accountId);
         entity.setContent(freeBoard.getContent());
         entity.setCreatedAt(ZonedDateTime.now());
         entity.setTitle(freeBoard.getTitle());

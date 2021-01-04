@@ -1,7 +1,6 @@
 package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.*;
-import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
@@ -14,10 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
 
 @Service
 public class AccountService {
@@ -40,13 +36,19 @@ public class AccountService {
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
     public ResponseEntity deleteUser() {
-        String user = UserUtils.getUserStringFromSecurityContextHolder();
-        userRepo.deleteById(user);
+        AccountEntity accountEntity = UserUtils.getUserEntity();
+
+        accountEntity.setAccountEmail(null);
+        accountEntity.setAccountPw(null);
+        accountEntity.setPhoneNum(null);
+        accountEntity.setActive(false);
+        userRepo.save(accountEntity);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public ResponseEntity checkId(String id) {
-        if (userRepo.findById(id).isPresent() || !StringValidationUtils.isValidEmail(id)) {
+    public ResponseEntity checkId(String email) {
+        if (userRepo.findByAccountEmail(email).isPresent() || !StringValidationUtils.isValidEmail(email)) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -83,12 +85,12 @@ public class AccountService {
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
         AccountEntity account = UserUtils.getUserEntity();
-        String user = account.getAccountEmail();
+        int accountId = account.getId();
 
-        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByEmail(user);
-        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByEmail(user);
-        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCommentRepo.findByEmail(user);
-        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByEmail(user);
+        List<ReviewBoardEntity> reviewBoardEntities = reviewRepo.findByAccountId(accountId);
+        List<FreeBoardEntity> freeBoardEntities = freeRepo.findByAccountId(accountId);
+        List<ReviewBoardCommentEntity> reviewBoardCommentEntities = reviewCommentRepo.findByAccountId(accountId);
+        List<FreeBoardCommentEntity> freeBoardCommentEntities = freeCommentRepo.findByAccountId(accountId);
 
         int likeCount = 0;
         likeCount += reviewBoardEntities.stream().mapToInt(reviewBoardEntity -> reviewBoardEntity.getLikeCnt()).sum();
@@ -107,10 +109,9 @@ public class AccountService {
     }
 
     public List<CommentBaseEntity> getUserArticleComments() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<CommentBaseEntity> result = new ArrayList<>();
-        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByEmail(user);
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(accountId);
 
         result.addAll(freeboardComments);
         result.sort(new CommentComparator());
@@ -119,10 +120,9 @@ public class AccountService {
     }
 
     public List<CommentBaseEntity> getUserReviewComments() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<CommentBaseEntity> result = new ArrayList<>();
-        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByEmail(user);
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(accountId);
 
         result.addAll(reviewBoarcComments);
         result.sort(new CommentComparator());

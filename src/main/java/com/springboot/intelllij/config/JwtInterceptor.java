@@ -3,7 +3,6 @@ package com.springboot.intelllij.config;
 import com.springboot.intelllij.constant.AuthConstant;
 import com.springboot.intelllij.utils.TokenUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,7 +19,11 @@ public class JwtInterceptor implements HandlerInterceptor {
             if(handler != null) {
                 String token = TokenUtils.getTokenFromHeader(header);
                 if(TokenUtils.isValidToken(token)) {
-                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(TokenUtils.getUserAccount(token),"test"));
+                    String userEmail = TokenUtils.getUserAccount(token);
+                    Integer userId = TokenUtils.getUserId(token);
+                    UsernamePasswordAuthenticationToken claimedToken = new UsernamePasswordAuthenticationToken(userEmail, "test");
+                    claimedToken.setDetails(userId);
+                    SecurityContextHolder.getContext().setAuthentication(claimedToken);
                     return true;
                 }
             }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FreeBoardPreviewRepository extends JpaRepository<FreeBoardViewEntity, Integer> {
 
-    List<FreeBoardViewEntity> findByEmail(String email);
+    List<FreeBoardViewEntity> findByAccountId(Integer accountId);
 }

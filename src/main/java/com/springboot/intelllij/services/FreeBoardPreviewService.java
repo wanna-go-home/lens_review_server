@@ -17,16 +17,13 @@ public class FreeBoardPreviewService {
 
     public List<FreeBoardViewEntity> getAllPreview() {
         List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findAll();
-
         result.sort(new BoardComparator());
-
         return result;
     }
 
     public List<FreeBoardViewEntity> getMyAllPreview() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = principal.toString();
-        List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findByEmail(user);
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findByAccountId(accountId);
 
         result.sort(new BoardComparator());
 

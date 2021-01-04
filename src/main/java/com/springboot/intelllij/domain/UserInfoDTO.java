@@ -15,6 +15,6 @@ public class UserInfoDTO {
     private int reviewCommentCount;
     private int freeCommentCount;
     private int likeCount;
-    private String email;
+    private int accountId;
     private String nickName;
 }

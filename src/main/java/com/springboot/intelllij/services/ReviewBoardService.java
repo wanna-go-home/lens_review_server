@@ -40,12 +40,12 @@ public class ReviewBoardService {
         LensEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
 
-        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,lensInfo);
+        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto,principal.toString());
+        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto, accountId);
         reviewBoardRepo.save(reviewBoard);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }

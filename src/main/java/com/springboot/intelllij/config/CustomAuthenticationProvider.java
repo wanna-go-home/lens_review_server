@@ -24,14 +24,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken)authentication;
-        String userName = token.getName();
+        String userEmail = token.getName();
         String userPw = (String)token.getCredentials();
-        AccountEntity account = accountRepository.findById(userName).orElseThrow(() -> new IllegalArgumentException(userName + " not exist"));
-        if(!passwordEncoder.matches(userPw,account.getAccountPw())) {
-            throw new BadCredentialsException(userName + " Invalid password");
+        AccountEntity account = accountRepository.findByAccountEmail(userEmail).orElseThrow(() -> new IllegalArgumentException(userEmail + " not exist"));
+        if(!passwordEncoder.matches(userPw, account.getAccountPw())) {
+            throw new BadCredentialsException(userEmail + " Invalid password");
         }
-
-        return new UsernamePasswordAuthenticationToken(account, userPw);
+        UsernamePasswordAuthenticationToken tokenWithDetails = new UsernamePasswordAuthenticationToken(
+                account, userPw
+        );
+        tokenWithDetails.setDetails(account);
+        return tokenWithDetails;
     }
 
     @Override
