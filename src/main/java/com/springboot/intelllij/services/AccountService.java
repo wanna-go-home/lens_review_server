@@ -98,6 +98,8 @@ public class AccountService {
         likeCount += reviewBoardCommentEntities.stream().mapToInt(reviewComment -> reviewComment.getLikeCnt()).sum();
         likeCount += freeBoardCommentEntities.stream().mapToInt(freeComment -> freeComment.getLikeCnt()).sum();
 
+        userInfo.setAccountId(accountId);
+        userInfo.setEmail(account.getAccountEmail());
         userInfo.setFreeCount(freeBoardEntities.size());
         userInfo.setReviewCount(reviewBoardEntities.size());
         userInfo.setFreeCommentCount(freeBoardCommentEntities.size());
