@@ -80,8 +80,5 @@ public class ReviewBoardController {
             @PathVariable(name = "commendId") Integer commentId) {
         return reviewBoardCommentService.deleteComment(postId, commentId);
     }
-  
-    @GetMapping(value = "/me")
-    public List<ReviewBoardViewEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
 
 }

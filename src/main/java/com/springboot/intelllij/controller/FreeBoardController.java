@@ -82,6 +82,4 @@ public class FreeBoardController {
         return freeBoardCommentService.deleteComment(postId, commentId);
     }
 
-    @GetMapping(value = "/me")
-    public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
 }
