@@ -70,8 +70,8 @@ public class ReviewBoardController {
     public ReviewBoardCommentEntity updateReviewBoardCommentById(
             @PathVariable(name = "id") Integer postId,
             @PathVariable(name = "commendId") Integer commentId,
-            @RequestBody String content) {
-        return reviewBoardCommentService.updateComment(postId, commentId, content);
+            @RequestBody CommentInputDTO comment) {
+        return reviewBoardCommentService.updateComment(postId, commentId, comment);
     }
 
     @DeleteMapping(value = "/{id}/comment/{commendId}")
