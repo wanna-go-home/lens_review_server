@@ -112,6 +112,18 @@ public class ReviewBoardCommentService {
     }
 
     public ResponseEntity deleteComment(Integer postId, Integer commentId) {
+        ReviewBoardCommentEntity comment = reviewBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+        ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
+
+        if(comment.getDepth() == CHILD_COMMENT_DEPTH) {
+            ReviewBoardCommentEntity parentComment = reviewBoardCommentRepo.findById(comment.getBundleId()).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+            parentComment.decreaseBundleSize();
+            reviewBoardCommentRepo.save(parentComment);
+        }
+
+        review.decreaseReplyCnt();
+        reviewBoardRepo.save(review);
+
         reviewBoardCommentRepo.deleteById(commentId);
         return ResponseEntity.ok(HttpStatus.OK);
     }

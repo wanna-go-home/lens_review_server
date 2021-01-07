@@ -113,6 +113,18 @@ public class FreeBoardCommentService {
     }
 
     public ResponseEntity deleteComment(Integer postId, Integer commentId) {
+        FreeBoardCommentEntity comment = freeBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+        FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
+
+        if(comment.getDepth() == CHILD_COMMENT_DEPTH) {
+            FreeBoardCommentEntity parentComment = freeBoardCommentRepo.findById(comment.getBundleId()).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+            parentComment.decreaseBundleSize();
+            freeBoardCommentRepo.save(parentComment);
+        }
+
+        article.decreaseReplyCnt();
+        freeBoardRepo.save(article);
+
         freeBoardCommentRepo.deleteById(commentId);
         return ResponseEntity.ok(HttpStatus.OK);
     }

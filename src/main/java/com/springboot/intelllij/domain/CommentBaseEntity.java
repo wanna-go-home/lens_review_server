@@ -47,6 +47,10 @@ public class CommentBaseEntity extends BaseEntity {
         this.bundleSize++;
     }
 
+    public void decreaseBundleSize() {
+        this.bundleSize--;
+    }
+
     public CommentBaseEntity(CommentBaseEntity commentBase) {
         this.setId(commentBase.getId());
         this.accountId = commentBase.getAccountId();

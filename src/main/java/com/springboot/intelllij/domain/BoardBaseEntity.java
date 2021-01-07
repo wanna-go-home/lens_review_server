@@ -45,4 +45,6 @@ public class BoardBaseEntity extends BaseEntity {
     public void increaseReplyCnt() {
         this.replyCnt++;
     }
+
+    public void decreaseReplyCnt() { this.replyCnt--; }
 }
