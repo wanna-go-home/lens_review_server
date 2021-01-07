@@ -55,11 +55,27 @@ public class AccountService {
     }
 
     public ResponseEntity checkNickName(String nickName) {
-        List<AccountEntity> nickNameList = userRepo.findByNickname(nickName);
-        if(nickNameList.isEmpty()) {
+        if (isDuplicatedNickName(nickName)) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    public ResponseEntity changeNickName(String nickName) {
+        if(isDuplicatedNickName(nickName)) {
+            AccountEntity user = UserUtils.getUserEntity();
+            user.setNickname(nickName);
+            userRepo.save(user);
+
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    private boolean isDuplicatedNickName(String nickName) {
+        List<AccountEntity> nickNameList = userRepo.findByNickname(nickName);
+        if(nickNameList.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     public ResponseEntity checkPhoneNumber(String phoneNumber) {

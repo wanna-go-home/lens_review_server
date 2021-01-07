@@ -55,6 +55,11 @@ public class UserController {
         return accountService.signup(accountEntity);
     }
 
+    @PutMapping(value = "/modify/nickname")
+    public ResponseEntity changeNickName(@RequestParam(value = "nickname") String nickName) {
+        return accountService.changeNickName(nickName);
+    }
+
     @GetMapping(value = "/me")
     public UserInfoDTO userInfo() {
         return accountService.getUserInfo();
