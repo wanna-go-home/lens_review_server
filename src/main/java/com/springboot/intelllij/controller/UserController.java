@@ -1,10 +1,10 @@
 package com.springboot.intelllij.controller;
 
 import com.springboot.intelllij.constant.RESTPath;
-import com.springboot.intelllij.domain.AccountEntity;
-import com.springboot.intelllij.domain.CommentBaseEntity;
-import com.springboot.intelllij.domain.UserInfoDTO;
+import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.AccountService;
+import com.springboot.intelllij.services.FreeBoardPreviewService;
+import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +17,12 @@ public class UserController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    FreeBoardPreviewService freeBoardPreviewService;
+
+    @Autowired
+    ReviewBoardPreviewService reviewBoardPreviewService;
 
     @GetMapping
     public List<AccountEntity> getAllUsers() {
@@ -63,4 +69,10 @@ public class UserController {
     public List<CommentBaseEntity> userReviewComments() {
         return accountService.getUserReviewComments();
     }
+
+    @GetMapping(value = "/article/me")
+    public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
+
+    @GetMapping(value = "/review/me")
+    public List<ReviewBoardViewEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
 }
