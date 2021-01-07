@@ -71,8 +71,8 @@ public class FreeBoardController {
     public FreeBoardCommentEntity updateFreeBoardCommentById(
             @PathVariable(name = "id") Integer postId,
             @PathVariable(name = "commendId") Integer commentId,
-            @RequestBody String content) {
-        return freeBoardCommentService.updateComment(postId, commentId, content);
+            @RequestBody CommentInputDTO comment) {
+        return freeBoardCommentService.updateComment(postId, commentId, comment);
     }
 
     @DeleteMapping(value = "/{id}/comment/{commendId}")

@@ -104,10 +104,10 @@ public class FreeBoardCommentService {
         return resultCommentList;
     }
 
-    public FreeBoardCommentEntity updateComment(Integer postId, Integer commentId, String content) {
+    public FreeBoardCommentEntity updateComment(Integer postId, Integer commentId, CommentInputDTO comment) {
         FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
 
-        originalComment.setContent(content);
+        originalComment.setContent(comment.getContent());
 
         return freeBoardCommentRepo.save(originalComment);
     }

@@ -103,10 +103,10 @@ public class ReviewBoardCommentService {
         return resultCommentList;
     }
 
-    public ReviewBoardCommentEntity updateComment(Integer postId, Integer commentId, String content) {
+    public ReviewBoardCommentEntity updateComment(Integer postId, Integer commentId, CommentInputDTO comment) {
         ReviewBoardCommentEntity originalComment = reviewBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
 
-        originalComment.setContent(content);
+        originalComment.setContent(comment.getContent());
 
         return reviewBoardCommentRepo.save(originalComment);
     }
