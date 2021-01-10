@@ -16,4 +16,12 @@ public interface ReviewBoardRepository extends JpaRepository<ReviewBoardEntity, 
     void updateReviewBoardEntity(
             @Param(value = "id") Integer id, @Param(value = "title") String title, @Param(value = "content") String content
     );
+
+    @Modifying
+    @Query("UPDATE ReviewBoardEntity e SET e.likeCnt = e.likeCnt + 1 WHERE e.id = :id")
+    void increaseLikeCnt(@Param(value = "id") Integer id);
+
+    @Modifying
+    @Query("UPDATE ReviewBoardEntity e SET e.likeCnt = e.likeCnt - 1 WHERE e.id = :id")
+    void decreaseLikeCnt(@Param(value = "id") Integer id);
 }

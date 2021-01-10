@@ -17,4 +17,11 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoardEntity, Inte
         @Param(value = "id") Integer id, @Param(value = "title") String title, @Param(value = "content") String content
     );
 
+    @Modifying
+    @Query("UPDATE FreeBoardEntity e SET e.likeCnt = e.likeCnt + 1 WHERE e.id = :id")
+    void increaseLikeCnt(@Param(value = "id") Integer id);
+
+    @Modifying
+    @Query("UPDATE FreeBoardEntity e SET e.likeCnt = e.likeCnt - 1 WHERE e.id = :id")
+    void decreaseLikeCnt(@Param(value = "id") Integer id);
 }
