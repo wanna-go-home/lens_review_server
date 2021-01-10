@@ -19,7 +19,7 @@ public class LensInfoController {
     @GetMapping
     public List<LensPreviewEntity> getLensesPreview() { return lensInfoService.getLensesPreview(); }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = RESTPath.ID)
     public LensEntity getLensInfoById(@PathVariable(name = "id") Integer id) {
         return lensInfoService.getLensInfoById(id);
     }

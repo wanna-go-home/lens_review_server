@@ -15,6 +15,5 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "free_board_comment")
 @DynamicUpdate
-@DynamicInsert
 public class FreeBoardCommentEntity extends CommentBaseEntity {
 }
