@@ -6,6 +6,7 @@ import com.springboot.intelllij.services.ReviewBoardCommentService;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,9 @@ public class ReviewBoardController {
     ReviewBoardCommentService reviewBoardCommentService;
 
     @GetMapping
-    public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
+    public List<ReviewBoardViewEntity> getReviewBoardPreview(int page, int size) {
+        return reviewBoardPreviewService.getAllPreview(PageRequest.of(page,size));
+    }
 
     @GetMapping(value = "/{id}")
     public ReviewBoardViewWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {

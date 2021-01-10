@@ -6,6 +6,7 @@ import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,9 @@ public class FreeBoardController {
     FreeBoardCommentService freeBoardCommentService;
 
     @GetMapping
-    public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
+    public List<FreeBoardViewEntity>  getFreeBoardPreviews(int page, int size) {
+        return freeBoardPreviewService.getAllPreview(PageRequest.of(page,size));
+    }
 
     @GetMapping(value = "/{id}")
     public FreeBoardViewEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
