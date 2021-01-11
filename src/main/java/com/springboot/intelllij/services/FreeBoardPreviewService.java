@@ -3,11 +3,14 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.repository.FreeBoardPreviewRepository;
 import com.springboot.intelllij.utils.BoardComparator;
+import com.springboot.intelllij.utils.EntityUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FreeBoardPreviewService {
@@ -18,15 +21,16 @@ public class FreeBoardPreviewService {
     public List<FreeBoardViewEntity> getAllPreview() {
         List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findAll();
         result.sort(new BoardComparator());
-        return result;
+
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        return (List<FreeBoardViewEntity>) EntityUtils.setIsAuthor(result, accountId);
     }
 
     public List<FreeBoardViewEntity> getMyAllPreview() {
-        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findByAccountId(accountId);
-
         result.sort(new BoardComparator());
 
-        return result;
+        return (List<FreeBoardViewEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
     }
 }

@@ -4,6 +4,7 @@ import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
+import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,9 +64,9 @@ public class ReviewBoardCommentService {
     }
 
     public List<CommentOutputDTO> getCommentByPostId(Integer postId) {
+        AccountEntity user = UserUtils.getUserEntity();
         List<ReviewBoardCommentEntity> comments = reviewBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH);
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
-        AccountEntity user = UserUtils.getUserEntity();
 
         Comparator<ReviewBoardCommentEntity> comparator = Comparator.comparing(ReviewBoardCommentEntity::getCreatedAt);
         comparator = comparator.thenComparingInt(ReviewBoardCommentEntity::getBundleId);
@@ -83,7 +84,7 @@ public class ReviewBoardCommentService {
             }
         }
 
-        return resultCommentList;
+        return (List<CommentOutputDTO>)EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
     public List<CommentOutputDTO> getAllCommentByPostId(Integer postId, Integer commentId) {

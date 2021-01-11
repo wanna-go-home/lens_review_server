@@ -4,6 +4,7 @@ import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import com.springboot.intelllij.repository.FreeBoardRepository;
+import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,17 +64,16 @@ public class FreeBoardCommentService {
     }
 
     public List<CommentOutputDTO> getCommentByPostId(Integer postId) {
-        List<FreeBoardCommentEntity> comments = freeBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH);
-        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         AccountEntity user = UserUtils.getUserEntity();
 
+        List<FreeBoardCommentEntity> comments = freeBoardCommentRepo.findByPostIdAndDepth(postId, COMMENT_DEPTH);
         Comparator<FreeBoardCommentEntity> comparator = Comparator.comparing(FreeBoardCommentEntity::getCreatedAt);
         comparator = comparator.thenComparingInt(FreeBoardCommentEntity::getBundleId);
         comments.sort(comparator);
 
+        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         for(FreeBoardCommentEntity commentEntity : comments) {
             List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(), CHILD_COMMENT_DEPTH);
-
             resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
 
             if(childCommentList.isEmpty()) continue;
@@ -84,7 +84,7 @@ public class FreeBoardCommentService {
             }
         }
 
-        return resultCommentList;
+        return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
     public List<CommentOutputDTO> getAllCommentByPostId(Integer postId, Integer commentId) {
@@ -92,23 +92,20 @@ public class FreeBoardCommentService {
                 .stream().filter(freeBoardCommentEntity -> freeBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(), CHILD_COMMENT_DEPTH);
-        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         AccountEntity user = UserUtils.getUserEntity();
 
+        List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         resultCommentList.add(new CommentOutputDTO(originalComment, user.getNickname()));
-
         childCommentList.forEach(bundle -> {
             resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
         });
 
-        return resultCommentList;
+        return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
     public FreeBoardCommentEntity updateComment(Integer postId, Integer commentId, CommentInputDTO comment) {
         FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
-
         originalComment.setContent(comment.getContent());
-
         return freeBoardCommentRepo.save(originalComment);
     }
 
