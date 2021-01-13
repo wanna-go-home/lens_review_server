@@ -75,6 +75,11 @@ public class UserController {
         return accountService.getUserReviewComments();
     }
 
+    @GetMapping(value = "/comments/me")
+    public List<CommentBaseEntity> getUserAllComments() {
+        return accountService.getUserAllComments();
+    }
+
     @GetMapping(value = "/article/me")
     public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
 

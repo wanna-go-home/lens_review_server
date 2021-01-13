@@ -148,4 +148,17 @@ public class AccountService {
         return result;
     }
 
+    public List<CommentBaseEntity> getUserAllComments() {
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        List<CommentBaseEntity> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(accountId);
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(accountId);
+
+        result.addAll(freeboardComments);
+        result.addAll(reviewBoarcComments);
+        result.sort(new CommentComparator());
+
+        return result;
+    }
+
 }
