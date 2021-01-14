@@ -65,17 +65,17 @@ public class UserController {
     }
 
     @GetMapping(value = "/article/comments/me")
-    public List<CommentBaseEntity> userArticleComments() {
+    public List<CommentOutputDTO> userArticleComments() {
         return accountService.getUserArticleComments();
     }
 
     @GetMapping(value = "/review/comments/me")
-    public List<CommentBaseEntity> userReviewComments() {
+    public List<CommentOutputDTO> userReviewComments() {
         return accountService.getUserReviewComments();
     }
 
     @GetMapping(value = "/comments/me")
-    public List<CommentBaseEntity> getUserAllComments() {
+    public List<CommentOutputDTO> getUserAllComments() {
         return accountService.getUserAllComments();
     }
 
