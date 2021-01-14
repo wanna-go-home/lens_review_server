@@ -4,9 +4,11 @@ import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.repository.FreeBoardPreviewRepository;
 import com.springboot.intelllij.utils.BoardComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,9 +17,12 @@ public class FreeBoardPreviewService {
     @Autowired
     FreeBoardPreviewRepository freeBoardPreviewRepo;
 
-    public List<FreeBoardViewEntity> getAllPreview() {
-        List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findAll();
+    public List<FreeBoardViewEntity> getAllPreview(Pageable pageable) {
+        List<FreeBoardViewEntity> result = new ArrayList<>();
+
+        result.addAll(freeBoardPreviewRepo.findAll(pageable).getContent());
         result.sort(new BoardComparator());
+
         return result;
     }
 
