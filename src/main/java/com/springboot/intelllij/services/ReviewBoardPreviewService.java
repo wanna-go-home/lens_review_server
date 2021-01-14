@@ -36,14 +36,11 @@ public class ReviewBoardPreviewService {
 
     public List<ReviewBoardViewWithLensInfoEntity> getMyAllPreview() {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
-        List<ReviewBoardViewWithLensInfoEntity> result = new ArrayList<>();
 
-        result.addAll(reviewBoardPreviewRepo.findByAccountId(accountId).stream()
+        return reviewBoardPreviewRepo.findByAccountId(accountId).stream()
                 .map(reviewBoardViewEntity -> new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,
                         lensRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
-                .collect(Collectors.toList()));
-        result.sort(new BoardComparator());
-
-        return result;
+                .sorted(new BoardComparator())
+                .collect(Collectors.toList());
     }
 }
