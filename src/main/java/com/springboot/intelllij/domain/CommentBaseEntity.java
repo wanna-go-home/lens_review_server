@@ -16,7 +16,6 @@ import java.time.ZonedDateTime;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-@DynamicInsert
 public class CommentBaseEntity extends BaseEntity {
     @Column(name = "account_id")
     private Integer accountId;

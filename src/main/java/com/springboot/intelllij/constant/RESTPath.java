@@ -10,4 +10,11 @@ public class RESTPath {
     public static final String BOARDS = "/boards";
     public static final String FREE_BOARD = API_PREFIX + BOARDS + "/article";
     public static final String REVIEW_BOARD = API_PREFIX + BOARDS + "/review-board";
+
+    public static final String ID = "/{id}";
+    public static final String COMMENTS = ID + "/comments";
+    public static final String COMMENT_ID = COMMENTS + "/{commentId}";
+
+    public static final String POST_LIKE = ID + "/like";
+    public static final String COMMENT_LIKE = COMMENT_ID + "/like";
 }

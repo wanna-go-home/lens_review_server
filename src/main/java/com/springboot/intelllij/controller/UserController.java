@@ -34,7 +34,6 @@ public class UserController {
         return accountService.deleteUser();
     }
 
-
     @GetMapping(value = "/check/id")
     public ResponseEntity checkId(@RequestParam(value = "id") String id) {
         return accountService.checkId(id);
