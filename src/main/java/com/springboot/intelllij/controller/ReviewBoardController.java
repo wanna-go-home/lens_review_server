@@ -26,7 +26,7 @@ public class ReviewBoardController {
     ReviewBoardCommentService reviewBoardCommentService;
 
     @GetMapping
-    public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
+    public List<ReviewBoardViewWithLensInfoEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
 
     @GetMapping(value = RESTPath.ID)
     public ReviewBoardViewWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {

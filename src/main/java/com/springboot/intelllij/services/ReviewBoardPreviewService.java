@@ -4,6 +4,7 @@ import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.domain.ReviewBoardViewWithLensInfoEntity;
 import com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum;
 import com.springboot.intelllij.exceptions.NotFoundException;
+import com.springboot.intelllij.repository.LensPreviewRepository;
 import com.springboot.intelllij.repository.LensRepository;
 import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
 import com.springboot.intelllij.utils.BoardComparator;
@@ -26,20 +27,21 @@ public class ReviewBoardPreviewService {
     ReviewBoardPreviewRepository reviewBoardPreviewRepo;
 
     @Autowired
-    LensRepository lensRepo;
+    LensPreviewRepository lensPreviewRepo;
 
-    public List<ReviewBoardViewEntity> getAllPreview() {
-        List<ReviewBoardViewEntity> result = reviewBoardPreviewRepo.findAll();
-        result.sort(new BoardComparator());
-
-        return (List<ReviewBoardViewEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
+    public List<ReviewBoardViewWithLensInfoEntity> getAllPreview() {
+        return reviewBoardPreviewRepo.findAll().stream()
+                .map(reviewBoardViewEntity -> new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,
+                        lensPreviewRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
+                .sorted(new BoardComparator())
+                .collect(Collectors.toList());
     }
 
     public List<ReviewBoardViewWithLensInfoEntity> getMyAllPreview() {
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<ReviewBoardViewWithLensInfoEntity> result = reviewBoardPreviewRepo.findByAccountId(accountId).stream()
                 .map(reviewBoardViewEntity -> new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,
-                        lensRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
+                        lensPreviewRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
                 .sorted(new BoardComparator())
                 .collect(Collectors.toList());
         return (List<ReviewBoardViewWithLensInfoEntity>)EntityUtils.setIsAuthor(result, accountId);

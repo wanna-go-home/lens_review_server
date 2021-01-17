@@ -9,10 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReviewBoardViewWithLensInfoEntity extends ReviewBoardViewEntity {
 
-    private LensEntity lensEntity;
+    private LensPreviewEntity lensPreviewEntity;
 
-    public ReviewBoardViewWithLensInfoEntity(ReviewBoardViewEntity reviewBoardEntity, LensEntity lensEntity) {
+    public ReviewBoardViewWithLensInfoEntity(ReviewBoardViewEntity reviewBoardEntity, LensPreviewEntity lensPreviewEntity) {
         super(reviewBoardEntity);
-        this.lensEntity = lensEntity;
+        this.lensPreviewEntity = lensPreviewEntity;
     }
 }
