@@ -2,10 +2,7 @@ package com.springboot.intelllij.services;
 
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
-import com.springboot.intelllij.repository.LensRepository;
-import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
-import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
-import com.springboot.intelllij.repository.ReviewBoardRepository;
+import com.springboot.intelllij.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,7 @@ public class ReviewBoardService {
     @Autowired
     private ReviewBoardRepository reviewBoardRepo;
     @Autowired
-    private LensRepository lensRepository;
+    private LensPreviewRepository lensRepository;
     @Autowired
     private ReviewBoardPreviewRepository reviewBoardPreviewRepository;
     @Autowired
@@ -37,7 +34,7 @@ public class ReviewBoardService {
                 orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
         reviewBoardViewEntity.increaseReplyCnt();
         reviewBoardViewEntity = reviewBoardPreviewRepository.save(reviewBoardViewEntity);
-        LensEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
+        LensPreviewEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
 
         return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
