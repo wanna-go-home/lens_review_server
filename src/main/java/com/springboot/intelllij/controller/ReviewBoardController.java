@@ -28,18 +28,18 @@ public class ReviewBoardController {
     @GetMapping
     public List<ReviewBoardViewEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = RESTPath.ID)
     public ReviewBoardViewWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.getReviewBoardById(id);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RESTPath.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateReviewBoardById(
             @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
         return reviewBoardService.updatePost(id, dto.getTitle(), dto.getContent());
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = RESTPath.ID)
     public ResponseEntity deletePostAndComments(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.deletePostAndComments(id);
     }
@@ -49,35 +49,35 @@ public class ReviewBoardController {
         return reviewBoardService.addPostToReviewBoard(reviewBoardDto);
     }
 
-    @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RESTPath.COMMENTS, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
         return reviewBoardCommentService.post(id, comment);
     }
 
-    @GetMapping(value = "/{id}/comments")
+    @GetMapping(value = RESTPath.COMMENTS)
     public List<CommentOutputDTO> getReviewBoardComment(@PathVariable(name = "id") Integer postId) {
         return reviewBoardCommentService.getCommentByPostId(postId);
     }
 
-    @GetMapping(value = "/{id}/comment/{commendId}")
+    @GetMapping(value = RESTPath.COMMENT_ID)
     public List<CommentOutputDTO> getReviewBoardAllComments(@PathVariable(name = "id") Integer postId,
-                                                                @PathVariable(name = "commendId") Integer commentId) {
+                                                                @PathVariable(name = "commentId") Integer commentId) {
         return reviewBoardCommentService.getAllCommentByPostId(postId,commentId);
     }
 
-    @PutMapping(value = "/{id}/comment/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RESTPath.COMMENT_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReviewBoardCommentEntity updateReviewBoardCommentById(
             @PathVariable(name = "id") Integer postId,
-            @PathVariable(name = "commendId") Integer commentId,
+            @PathVariable(name = "commentId") Integer commentId,
             @RequestBody CommentInputDTO comment) {
         return reviewBoardCommentService.updateComment(postId, commentId, comment);
     }
 
-    @DeleteMapping(value = "/{id}/comment/{commendId}")
+    @DeleteMapping(value = RESTPath.COMMENT_ID)
     public ResponseEntity deleteReviewBoardCommentById(
             @PathVariable(name = "id") Integer postId,
-            @PathVariable(name = "commendId") Integer commentId) {
+            @PathVariable(name = "commentId") Integer commentId) {
         return reviewBoardCommentService.deleteComment(postId, commentId);
     }
 

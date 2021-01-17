@@ -15,7 +15,6 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-@DynamicInsert
 public abstract class CommentBaseEntity extends BaseEntity {
     @Column(name = "post_id")
     private Integer postId;
@@ -48,4 +47,5 @@ public abstract class CommentBaseEntity extends BaseEntity {
         this.bundleId = commentBase.getBundleId();
         this.bundleSize = commentBase.getBundleSize();
         this.isAuthor = commentBase.getIsAuthor();
+    }
 }

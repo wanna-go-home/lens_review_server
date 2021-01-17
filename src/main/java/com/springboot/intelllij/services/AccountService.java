@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -126,23 +127,44 @@ public class AccountService {
         return userInfo;
     }
 
-    public List<CommentBaseEntity> getUserArticleComments() {
-        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        List<CommentBaseEntity> result = new ArrayList<>();
-        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(accountId);
+    public List<CommentOutputDTO> getUserArticleComments() {
+        AccountEntity user = UserUtils.getUserEntity();
+        List<CommentOutputDTO> result = new ArrayList<>();
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(user.getId());
 
-        result.addAll(freeboardComments);
+        result.addAll(freeboardComments.stream()
+                .map(freeBoardCommentEntity -> new CommentOutputDTO(freeBoardCommentEntity, user.getNickname()))
+                .collect(Collectors.toList()));
         result.sort(new CommentComparator());
 
         return result;
     }
 
-    public List<CommentBaseEntity> getUserReviewComments() {
-        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        List<CommentBaseEntity> result = new ArrayList<>();
-        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(accountId);
+    public List<CommentOutputDTO> getUserReviewComments() {
+        AccountEntity user = UserUtils.getUserEntity();
+        List<CommentOutputDTO> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(user.getId());
 
-        result.addAll(reviewBoarcComments);
+        result.addAll(reviewBoarcComments.stream()
+                .map(reviewBoardCommentEntity -> new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname()))
+                .collect(Collectors.toList()));
+        result.sort(new CommentComparator());
+
+        return result;
+    }
+
+    public List<CommentOutputDTO> getUserAllComments() {
+        AccountEntity user = UserUtils.getUserEntity();
+        List<CommentOutputDTO> result = new ArrayList<>();
+        List<ReviewBoardCommentEntity> reviewBoarcComments = reviewCommentRepo.findByAccountId(user.getId());
+        List<FreeBoardCommentEntity> freeboardComments = freeCommentRepo.findByAccountId(user.getId());
+
+        result.addAll(freeboardComments.stream()
+                .map(freeBoardCommentEntity -> new CommentOutputDTO(freeBoardCommentEntity, user.getNickname()))
+                .collect(Collectors.toList()));
+        result.addAll(reviewBoarcComments.stream()
+                .map(reviewBoardCommentEntity -> new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname()))
+                .collect(Collectors.toList()));
         result.sort(new CommentComparator());
 
         return result;

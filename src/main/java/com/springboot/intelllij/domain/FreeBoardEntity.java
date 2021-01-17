@@ -13,6 +13,5 @@ import javax.persistence.Table;
 @Setter
 @Table(name = "free_board")
 @DynamicUpdate
-@DynamicInsert
 public class FreeBoardEntity extends BoardBaseEntity {
 }

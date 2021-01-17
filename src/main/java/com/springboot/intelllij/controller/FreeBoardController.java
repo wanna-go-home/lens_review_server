@@ -28,18 +28,18 @@ public class FreeBoardController {
     @GetMapping
     public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = RESTPath.ID)
     public FreeBoardViewEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
         return freeBoardService.getFreeBoardById(id);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RESTPath.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateFreeBoardById(
             @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
         return freeBoardService.updatePost(id, dto.getTitle(), dto.getContent());
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = RESTPath.ID)
     public ResponseEntity deletePostAndComments(@PathVariable(name = "id") Integer id) {
         return freeBoardService.deletePostAndComments(id);
     }
@@ -50,35 +50,35 @@ public class FreeBoardController {
         return freeBoardService.addPostToFreeBoard(freeBoard);
     }
 
-    @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RESTPath.COMMENTS, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
         return freeBoardCommentService.post(id, comment);
     }
 
-    @GetMapping(value = "/{id}/comments")
+    @GetMapping(value = RESTPath.COMMENTS)
     public List<CommentOutputDTO> getFreeBoardComment(@PathVariable(name = "id") Integer postId) {
         return freeBoardCommentService.getCommentByPostId(postId);
     }
 
-    @GetMapping(value = "/{id}/comment/{commendId}")
-    public List<CommentOutputDTO> getFreeBoardAllComments(@PathVariable(name = "id") Integer postId,
-                                                            @PathVariable(name = "commendId") Integer commentId) {
+    @GetMapping(value = RESTPath.COMMENT_ID)
+    public List<CommentOutputDTO> getFreeBoardAllComments(
+            @PathVariable(name = "id") Integer postId, @PathVariable(name = "commentId") Integer commentId) {
         return freeBoardCommentService.getAllCommentByPostId(postId,commentId);
     }
 
-    @PutMapping(value = "/{id}/comment/{commendId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RESTPath.COMMENT_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public FreeBoardCommentEntity updateFreeBoardCommentById(
             @PathVariable(name = "id") Integer postId,
-            @PathVariable(name = "commendId") Integer commentId,
+            @PathVariable(name = "commentId") Integer commentId,
             @RequestBody CommentInputDTO comment) {
         return freeBoardCommentService.updateComment(postId, commentId, comment);
     }
 
-    @DeleteMapping(value = "/{id}/comment/{commendId}")
+    @DeleteMapping(value = RESTPath.COMMENT_ID)
     public ResponseEntity deleteFreeBoardCommentById(
             @PathVariable(name = "id") Integer postId,
-            @PathVariable(name = "commendId") Integer commentId) {
+            @PathVariable(name = "commentId") Integer commentId) {
         return freeBoardCommentService.deleteComment(postId, commentId);
     }
 

@@ -34,7 +34,6 @@ public class UserController {
         return accountService.deleteUser();
     }
 
-
     @GetMapping(value = "/check/id")
     public ResponseEntity checkId(@RequestParam(value = "id") String id) {
         return accountService.checkId(id);
@@ -66,18 +65,23 @@ public class UserController {
     }
 
     @GetMapping(value = "/article/comments/me")
-    public List<CommentBaseEntity> userArticleComments() {
+    public List<CommentOutputDTO> userArticleComments() {
         return accountService.getUserArticleComments();
     }
 
     @GetMapping(value = "/review/comments/me")
-    public List<CommentBaseEntity> userReviewComments() {
+    public List<CommentOutputDTO> userReviewComments() {
         return accountService.getUserReviewComments();
+    }
+
+    @GetMapping(value = "/comments/me")
+    public List<CommentOutputDTO> getUserAllComments() {
+        return accountService.getUserAllComments();
     }
 
     @GetMapping(value = "/article/me")
     public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
 
     @GetMapping(value = "/review/me")
-    public List<ReviewBoardViewEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
+    public List<ReviewBoardViewWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
 }
