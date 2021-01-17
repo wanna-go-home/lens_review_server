@@ -7,6 +7,8 @@ import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.LensRepository;
 import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
 import com.springboot.intelllij.utils.BoardComparator;
+import com.springboot.intelllij.utils.EntityUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,19 +30,18 @@ public class ReviewBoardPreviewService {
 
     public List<ReviewBoardViewEntity> getAllPreview() {
         List<ReviewBoardViewEntity> result = reviewBoardPreviewRepo.findAll();
-
         result.sort(new BoardComparator());
 
-        return result;
+        return (List<ReviewBoardViewEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
     }
 
     public List<ReviewBoardViewWithLensInfoEntity> getMyAllPreview() {
-        Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
-
-        return reviewBoardPreviewRepo.findByAccountId(accountId).stream()
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        List<ReviewBoardViewWithLensInfoEntity> result = reviewBoardPreviewRepo.findByAccountId(accountId).stream()
                 .map(reviewBoardViewEntity -> new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity,
                         lensRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
                 .sorted(new BoardComparator())
                 .collect(Collectors.toList());
+        return (List<ReviewBoardViewWithLensInfoEntity>)EntityUtils.setIsAuthor(result, accountId);
     }
 }

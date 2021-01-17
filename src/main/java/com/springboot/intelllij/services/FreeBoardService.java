@@ -7,6 +7,8 @@ import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import com.springboot.intelllij.repository.FreeBoardPreviewRepository;
 import com.springboot.intelllij.repository.FreeBoardRepository;
+import com.springboot.intelllij.utils.EntityUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,10 @@ public class FreeBoardService {
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
 
-    public List<FreeBoardEntity> getAllPosts() { return freeBoardRepo.findAll(); }
+    public List<FreeBoardEntity> getAllPosts() {
+        List<FreeBoardEntity> allPosts = freeBoardRepo.findAll();
+        return (List<FreeBoardEntity>) EntityUtils.setIsAuthor(allPosts, UserUtils.getUserIdFromSecurityContextHolder());
+    }
 
     public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
@@ -51,7 +56,7 @@ public class FreeBoardService {
                 orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
         freeBoardViewEntity.setViewCnt(freeBoardViewEntity.getViewCnt() + 1);
         freeBoardViewEntity = freeBoardPreviewRepository.save(freeBoardViewEntity);
-        return freeBoardViewEntity;
+        return EntityUtils.setIsAuthor(freeBoardViewEntity, UserUtils.getUserIdFromSecurityContextHolder());
     }
 
     @Transactional
