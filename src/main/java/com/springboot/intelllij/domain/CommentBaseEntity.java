@@ -47,5 +47,6 @@ public abstract class CommentBaseEntity extends BaseEntity {
         this.bundleId = commentBase.getBundleId();
         this.bundleSize = commentBase.getBundleSize();
         this.isAuthor = commentBase.getIsAuthor();
+        this.isLiked = commentBase.getIsLiked();
     }
 }

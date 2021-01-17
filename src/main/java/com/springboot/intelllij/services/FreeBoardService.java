@@ -1,5 +1,6 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.BoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.domain.FreeBoardViewEntity;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.BOARD_NOT_FOUND;
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
@@ -31,11 +31,8 @@ public class FreeBoardService {
     FreeBoardPreviewRepository freeBoardPreviewRepository;
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
-
-    public List<FreeBoardEntity> getAllPosts() {
-        List<FreeBoardEntity> allPosts = freeBoardRepo.findAll();
-        return (List<FreeBoardEntity>) EntityUtils.setIsAuthor(allPosts, UserUtils.getUserIdFromSecurityContextHolder());
-    }
+    @Autowired
+    EntityUtils entityUtils;
 
     public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
@@ -56,7 +53,10 @@ public class FreeBoardService {
                 orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
         freeBoardViewEntity.setViewCnt(freeBoardViewEntity.getViewCnt() + 1);
         freeBoardViewEntity = freeBoardPreviewRepository.save(freeBoardViewEntity);
-        return EntityUtils.setIsAuthor(freeBoardViewEntity, UserUtils.getUserIdFromSecurityContextHolder());
+
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        freeBoardViewEntity = entityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
     }
 
     @Transactional
