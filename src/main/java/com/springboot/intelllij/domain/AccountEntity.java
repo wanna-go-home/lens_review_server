@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicUpdate
+@DynamicInsert
 @Table(name = "account")
 public class AccountEntity {
 

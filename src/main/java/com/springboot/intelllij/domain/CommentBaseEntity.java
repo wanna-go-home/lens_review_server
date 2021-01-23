@@ -14,7 +14,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @NoArgsConstructor
-@DynamicUpdate
+@DynamicInsert
 public abstract class CommentBaseEntity extends BaseEntity {
     @Column(name = "post_id")
     private Integer postId;
