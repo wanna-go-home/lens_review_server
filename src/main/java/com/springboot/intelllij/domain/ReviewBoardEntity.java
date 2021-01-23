@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @Table(name = "review_board")
-@DynamicUpdate
+@DynamicInsert
 public class ReviewBoardEntity extends BoardBaseEntity {
     @Column(name = "lens_id")
     private Integer lensId;
