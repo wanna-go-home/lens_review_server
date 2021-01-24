@@ -7,6 +7,7 @@ import com.springboot.intelllij.repository.LikeHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,8 +16,13 @@ import java.util.stream.Collectors;
 @Component
 public class EntityUtils {
 
+    private static LikeHistoryRepository likeHistoryRepository;
+
     @Autowired
-    LikeHistoryRepository likeHistoryRepository;
+    private LikeHistoryRepository initLikeHistoryRepository;
+
+    @PostConstruct
+    private void setLikeHistoryRepository() { likeHistoryRepository = this.initLikeHistoryRepository; }
 
     public static List<? extends BaseEntity> setIsAuthor(List<? extends BaseEntity> entityList, int accountId) {
         return entityList.stream().map(entity -> {
@@ -30,8 +36,7 @@ public class EntityUtils {
         return entity;
     }
 
-    // TODO : Insert this method into service after genericize services
-    public <R extends BaseEntity> List<R> setIsLiked(List<R> entityList, int accountId, LikeableTables likeableTables) {
+    public static  <R extends BaseEntity> List<R> setIsLiked(List<R> entityList, int accountId, LikeableTables likeableTables) {
         List<LikedHistoryEntity> likedHistoryList = likeHistoryRepository.findByAccountIdAndLikeableTable(accountId, likeableTables);
         Set<Integer> likedSet = likedHistoryList.stream().map(LikedHistoryEntity::getTableContentId).collect(Collectors.toSet());
 
@@ -43,7 +48,7 @@ public class EntityUtils {
         return entityList;
     }
 
-    public <R extends BaseEntity> R setIsLiked(R entity, int accountId, LikeableTables likeableTables, int tableContentId) {
+    public static <R extends BaseEntity> R setIsLiked(R entity, int accountId, LikeableTables likeableTables, int tableContentId) {
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTables, tableContentId
         );

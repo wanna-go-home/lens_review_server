@@ -2,6 +2,7 @@ package com.springboot.intelllij.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "free_board_view")
-@DynamicUpdate
+@DynamicInsert
 public class FreeBoardViewEntity extends BoardBaseEntity {
     @Column(name = "nickname")
     private String nickname;

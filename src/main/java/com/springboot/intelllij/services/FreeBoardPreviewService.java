@@ -18,15 +18,12 @@ public class FreeBoardPreviewService {
     @Autowired
     FreeBoardPreviewRepository freeBoardPreviewRepo;
 
-    @Autowired
-    EntityUtils entityUtils;
-
     public List<FreeBoardViewEntity> getAllPreview() {
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findAll();
         result.sort(new BoardComparator());
 
-        result = entityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
 
         return (List<FreeBoardViewEntity>) EntityUtils.setIsAuthor(result, accountId);
     }
@@ -35,7 +32,7 @@ public class FreeBoardPreviewService {
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
         List<FreeBoardViewEntity> result = freeBoardPreviewRepo.findByAccountId(accountId);
         result.sort(new BoardComparator());
-        result = entityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
         return (List<FreeBoardViewEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
     }
 }

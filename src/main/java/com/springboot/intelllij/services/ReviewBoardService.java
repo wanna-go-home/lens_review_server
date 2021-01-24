@@ -31,8 +31,6 @@ public class ReviewBoardService {
     private ReviewBoardPreviewRepository reviewBoardPreviewRepository;
     @Autowired
     private ReviewBoardCommentRepository reviewBoardCommentRepository;
-    @Autowired
-    private EntityUtils entityUtils;
 
     public List<ReviewBoardEntity> getAllPosts() { return reviewBoardRepo.findAll(); }
 
@@ -46,7 +44,7 @@ public class ReviewBoardService {
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
         ReviewBoardViewWithLensInfoEntity reviewWithLens = new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        reviewWithLens = entityUtils.setIsLiked(reviewWithLens, accountId, LikeableTables.REVIEW_BOARD, id);
+        reviewWithLens = EntityUtils.setIsLiked(reviewWithLens, accountId, LikeableTables.REVIEW_BOARD, id);
         return EntityUtils.setIsAuthor(reviewWithLens, accountId);
     }
 

@@ -29,9 +29,6 @@ public class FreeBoardCommentService {
     @Autowired
     FreeBoardRepository freeBoardRepo;
 
-    @Autowired
-    EntityUtils entityUtils;
-
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
     private final int CHILD_COMMENT_DEPTH = 1;
@@ -88,7 +85,7 @@ public class FreeBoardCommentService {
             }
         }
 
-        resultCommentList = entityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.FREE_BOARD_COMMENT);
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.FREE_BOARD_COMMENT);
         return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
@@ -105,7 +102,7 @@ public class FreeBoardCommentService {
         for(FreeBoardCommentEntity bundle: childCommentList) {
             resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
         }
-        resultCommentList = entityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.FREE_BOARD_COMMENT);
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.FREE_BOARD_COMMENT);
         return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 

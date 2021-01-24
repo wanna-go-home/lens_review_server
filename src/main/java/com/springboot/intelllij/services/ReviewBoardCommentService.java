@@ -27,8 +27,6 @@ public class ReviewBoardCommentService {
     ReviewBoardCommentRepository reviewBoardCommentRepo;
     @Autowired
     ReviewBoardRepository reviewBoardRepo;
-    @Autowired
-    EntityUtils entityUtils;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -86,7 +84,7 @@ public class ReviewBoardCommentService {
             }
         }
 
-        resultCommentList = entityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
         return (List<CommentOutputDTO>)EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
@@ -103,7 +101,7 @@ public class ReviewBoardCommentService {
             resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
         }
 
-        resultCommentList = entityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
         return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 

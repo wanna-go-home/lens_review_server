@@ -28,14 +28,11 @@ public class ReviewBoardPreviewService {
     @Autowired
     LensRepository lensRepo;
 
-    @Autowired
-    EntityUtils entityUtils;
-
     public List<ReviewBoardViewEntity> getAllPreview() {
         List<ReviewBoardViewEntity> result = reviewBoardPreviewRepo.findAll();
         result.sort(new BoardComparator());
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        result = entityUtils.setIsLiked(result, accountId, LikeableTables.REVIEW_BOARD);
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.REVIEW_BOARD);
         return (List<ReviewBoardViewEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
     }
 
@@ -46,7 +43,7 @@ public class ReviewBoardPreviewService {
                         lensRepo.findById(reviewBoardViewEntity.getLensId()).orElseThrow(() -> new NotFoundException(LENS_NOT_FOUND))))
                 .sorted(new BoardComparator())
                 .collect(Collectors.toList());
-        result = entityUtils.setIsLiked(result, accountId, LikeableTables.REVIEW_BOARD);
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.REVIEW_BOARD);
         return (List<ReviewBoardViewWithLensInfoEntity>)EntityUtils.setIsAuthor(result, accountId);
     }
 }

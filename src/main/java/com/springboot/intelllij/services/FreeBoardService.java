@@ -31,8 +31,6 @@ public class FreeBoardService {
     FreeBoardPreviewRepository freeBoardPreviewRepository;
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
-    @Autowired
-    EntityUtils entityUtils;
 
     public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
@@ -55,7 +53,7 @@ public class FreeBoardService {
         freeBoardViewEntity = freeBoardPreviewRepository.save(freeBoardViewEntity);
 
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        freeBoardViewEntity = entityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
+        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
         return EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
     }
 
