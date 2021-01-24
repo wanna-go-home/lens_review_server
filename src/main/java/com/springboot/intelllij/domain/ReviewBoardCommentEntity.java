@@ -13,7 +13,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table (name = "review_board_comment")
-@DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 public class ReviewBoardCommentEntity extends CommentBaseEntity {
