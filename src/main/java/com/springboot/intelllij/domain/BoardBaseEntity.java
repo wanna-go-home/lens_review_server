@@ -19,10 +19,10 @@ public abstract class BoardBaseEntity extends BaseEntity {
     private String title;
 
     @Column(name = "view_cnt")
-    private Integer viewCnt;
+    private Integer viewCnt = 0;
 
     @Column(name = "reply_cnt")
-    private Integer replyCnt;
+    private Integer replyCnt = 0;
 
     public BoardBaseEntity(Integer accountId, String title, String content) {
         this.accountId = accountId;

@@ -60,10 +60,10 @@ public class AccountService {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
-    public ResponseEntity changeNickName(String nickName) {
-        if(isDuplicatedNickName(nickName)) {
+    public ResponseEntity changeNickName(UserModifyDTO userModifyDTO) {
+        if(isDuplicatedNickName(userModifyDTO.getNickName())) {
             AccountEntity user = UserUtils.getUserEntity();
-            user.setNickname(nickName);
+            user.setNickname(userModifyDTO.getNickName());
             userRepo.save(user);
 
             return ResponseEntity.status(HttpStatus.OK).build();

@@ -55,8 +55,8 @@ public class UserController {
     }
 
     @PutMapping(value = "/modify/nickname")
-    public ResponseEntity changeNickName(@RequestParam(value = "nickname") String nickName) {
-        return accountService.changeNickName(nickName);
+    public ResponseEntity changeNickName(@RequestBody UserModifyDTO userModifyDTO) {
+        return accountService.changeNickName(userModifyDTO);
     }
 
     @GetMapping(value = "/me")

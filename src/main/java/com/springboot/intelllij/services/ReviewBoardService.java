@@ -3,10 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
-import com.springboot.intelllij.repository.LensRepository;
-import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
-import com.springboot.intelllij.repository.ReviewBoardPreviewRepository;
-import com.springboot.intelllij.repository.ReviewBoardRepository;
+import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ public class ReviewBoardService {
     @Autowired
     private ReviewBoardRepository reviewBoardRepo;
     @Autowired
-    private LensRepository lensRepository;
+    private LensPreviewRepository lensRepository;
     @Autowired
     private ReviewBoardPreviewRepository reviewBoardPreviewRepository;
     @Autowired
@@ -40,12 +37,13 @@ public class ReviewBoardService {
                 orElseThrow(()-> new NotFoundException(BOARD_NOT_FOUND));
         reviewBoardViewEntity.increaseReplyCnt();
         reviewBoardViewEntity = reviewBoardPreviewRepository.save(reviewBoardViewEntity);
-        LensEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
+        LensPreviewEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
-        ReviewBoardViewWithLensInfoEntity reviewWithLens = new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
+        ReviewBoardViewWithLensInfoEntity reviewWithLensInfo =
+                new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        reviewWithLens = EntityUtils.setIsLiked(reviewWithLens, accountId, LikeableTables.REVIEW_BOARD, id);
-        return EntityUtils.setIsAuthor(reviewWithLens, accountId);
+        reviewWithLensInfo = EntityUtils.setIsLiked(reviewWithLensInfo, accountId, LikeableTables.REVIEW_BOARD, id);
+        return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {

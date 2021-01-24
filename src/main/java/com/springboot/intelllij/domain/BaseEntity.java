@@ -23,7 +23,7 @@ public abstract class BaseEntity {
     protected String content;
 
     @Column(name = "like_cnt")
-    protected Integer likeCnt;
+    protected Integer likeCnt = 0;
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

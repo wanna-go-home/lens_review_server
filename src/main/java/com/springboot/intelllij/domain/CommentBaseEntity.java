@@ -20,13 +20,13 @@ public abstract class CommentBaseEntity extends BaseEntity {
     private Integer postId;
 
     @Column(name = "depth")
-    private Integer depth;
+    private Integer depth = 0;
 
     @Column(name = "bundle_id")
     private Integer bundleId;
 
     @Column(name = "bundle_size")
-    private Integer bundleSize;
+    private Integer bundleSize = 0;
 
     public void increaseBundleSize() {
         this.bundleSize++;
