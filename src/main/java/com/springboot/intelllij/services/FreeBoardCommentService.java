@@ -73,7 +73,7 @@ public class FreeBoardCommentService {
 
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         for(FreeBoardCommentEntity commentEntity : comments) {
-            List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(), CHILD_COMMENT_DEPTH);
+            List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(commentEntity.getId(), CHILD_COMMENT_DEPTH);
             resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
 
             if(childCommentList.isEmpty()) continue;
@@ -91,7 +91,7 @@ public class FreeBoardCommentService {
         FreeBoardCommentEntity originalComment = freeBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
                 .stream().filter(freeBoardCommentEntity -> freeBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
-        List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(), CHILD_COMMENT_DEPTH);
+        List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(originalComment.getId(), CHILD_COMMENT_DEPTH);
         AccountEntity user = UserUtils.getUserEntity();
 
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
