@@ -73,7 +73,7 @@ public class ReviewBoardCommentService {
         comments.sort(comparator);
 
         for(ReviewBoardCommentEntity commentEntity : comments) {
-            List<ReviewBoardCommentEntity> childCommentList = reviewBoardCommentRepo.findByBundleIdAndDepth(commentEntity.getId(),CHILD_COMMENT_DEPTH);
+            List<ReviewBoardCommentEntity> childCommentList = reviewBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(commentEntity.getId(),CHILD_COMMENT_DEPTH);
             resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
 
             if(childCommentList.isEmpty()) continue;
@@ -91,7 +91,7 @@ public class ReviewBoardCommentService {
         ReviewBoardCommentEntity originalComment = reviewBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
                 .stream().filter(reviewBoardCommentEntity -> reviewBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
-        List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepth(originalComment.getId(),CHILD_COMMENT_DEPTH);
+        List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(originalComment.getId(),CHILD_COMMENT_DEPTH);
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         AccountEntity user = UserUtils.getUserEntity();
 
