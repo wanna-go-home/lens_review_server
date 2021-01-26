@@ -20,6 +20,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**");
     }
 
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/");
+    }
+
     @Bean
     public FilterRegistrationBean<HeaderFilter> getFilterRegistrationBean() {
         FilterRegistrationBean<HeaderFilter> registrationBean = new FilterRegistrationBean<>(createHeaderFilter());
