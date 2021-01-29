@@ -15,6 +15,8 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
 
     List<FreeBoardCommentEntity> findByBundleIdAndDepth(Integer bundleId, Integer depth);
 
+    List<FreeBoardCommentEntity> findByBundleIdAndDepthOrderByCreatedAtAsc(Integer bundleId, Integer depth);
+
     List<FreeBoardCommentEntity> findByAccountId(Integer accountId);
 
     void deleteByPostId(Integer postId);
