@@ -1,5 +1,6 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
@@ -24,7 +25,6 @@ public class ReviewBoardCommentService {
 
     @Autowired
     ReviewBoardCommentRepository reviewBoardCommentRepo;
-
     @Autowired
     ReviewBoardRepository reviewBoardRepo;
 
@@ -84,24 +84,25 @@ public class ReviewBoardCommentService {
             }
         }
 
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
         return (List<CommentOutputDTO>)EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
     public List<CommentOutputDTO> getAllCommentByPostId(Integer postId, Integer commentId) {
+        AccountEntity user = UserUtils.getUserEntity();
         ReviewBoardCommentEntity originalComment = reviewBoardCommentRepo.findByPostIdAndDepth(postId,COMMENT_DEPTH)
                 .stream().filter(reviewBoardCommentEntity -> reviewBoardCommentEntity.getId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(originalComment.getId(),CHILD_COMMENT_DEPTH);
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
-        AccountEntity user = UserUtils.getUserEntity();
 
         resultCommentList.add(new CommentOutputDTO(originalComment, user.getNickname()));
-
-        commentsOfComment.forEach(bundle -> {
+        for(ReviewBoardCommentEntity bundle: commentsOfComment) {
             resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
-        });
+        }
 
-        return resultCommentList;
+        resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);
+        return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
     }
 
     public ReviewBoardCommentEntity updateComment(Integer postId, Integer commentId, CommentInputDTO comment) {

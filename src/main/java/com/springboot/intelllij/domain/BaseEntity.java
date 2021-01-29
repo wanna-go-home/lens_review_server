@@ -31,4 +31,7 @@ public abstract class BaseEntity {
 
     @Transient
     protected Boolean isAuthor;
+
+    @Transient
+    protected Boolean isLiked;
 }

@@ -1,8 +1,11 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
+import com.springboot.intelllij.utils.EntityUtils;
+import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +39,11 @@ public class ReviewBoardService {
         reviewBoardViewEntity = reviewBoardPreviewRepository.save(reviewBoardViewEntity);
         LensPreviewEntity lensInfo = lensRepository.findById(reviewBoardViewEntity.getLensId())
                 .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
-
-        return new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
+        ReviewBoardViewWithLensInfoEntity reviewWithLensInfo =
+                new ReviewBoardViewWithLensInfoEntity(reviewBoardViewEntity, lensInfo);
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        reviewWithLensInfo = EntityUtils.setIsLiked(reviewWithLensInfo, accountId, LikeableTables.REVIEW_BOARD, id);
+        return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {

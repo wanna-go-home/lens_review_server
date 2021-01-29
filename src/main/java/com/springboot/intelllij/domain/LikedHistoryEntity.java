@@ -5,16 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity(name = "liked_history")
-public class LikedHistoryEntity extends BaseEntity {
+public class LikedHistoryEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
+    private Integer id;
 
     @Column(name = "account_id", nullable = false)
     private Integer accountId;
