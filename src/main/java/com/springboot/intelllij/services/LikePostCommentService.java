@@ -1,8 +1,10 @@
 package com.springboot.intelllij.services;
 
-import com.springboot.intelllij.domain.LikedHistoryEntity;
+import com.springboot.intelllij.domain.*;
+import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.constant.LikeableTables;
+import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
 
 @Service
 public class LikePostCommentService {
@@ -37,12 +42,16 @@ public class LikePostCommentService {
                 accountId, likeableTable, id
         );
 
+        FreeBoardEntity freeBoardEntity = freeBoardRepository.findById(id).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         if(!likedHistoryEntity.isPresent()) {
             LikedHistoryEntity newLikedHistoryEntity = new LikedHistoryEntity(accountId, likeableTable, id);
             likeHistoryRepository.save(newLikedHistoryEntity);
-            freeBoardRepository.increaseLikeCnt(id);
+            freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
+            freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return new ResponseEntity<>(freeBoardEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -52,11 +61,15 @@ public class LikePostCommentService {
                 accountId, likeableTable, id
         );
 
+        FreeBoardEntity freeBoardEntity = freeBoardRepository.findById(id).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         if(likedHistoryEntity.isPresent()) {
             likeHistoryRepository.delete(likedHistoryEntity.get());
-            freeBoardRepository.decreaseLikeCnt(id);
+            freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() - 1);
+            freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return new ResponseEntity<>(freeBoardEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -66,12 +79,18 @@ public class LikePostCommentService {
                 accountId, likeableTable, id
         );
 
+        ReviewBoardEntity reviewBoardEntity = reviewBoardRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         if(!likedHistoryEntity.isPresent()) {
             LikedHistoryEntity newLikedHistoryEntity = new LikedHistoryEntity(accountId, likeableTable, id);
             likeHistoryRepository.save(newLikedHistoryEntity);
-            reviewBoardRepository.increaseLikeCnt(id);
+            reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() + 1);
+            reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        reviewBoardEntity = EntityUtils.setIsAuthor(reviewBoardEntity, accountId);
+        reviewBoardEntity = EntityUtils.setIsLiked(reviewBoardEntity, accountId, LikeableTables.REVIEW_BOARD, id);
+        return new ResponseEntity<>(reviewBoardEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -81,11 +100,17 @@ public class LikePostCommentService {
                 accountId, likeableTable, id
         );
 
+        ReviewBoardEntity reviewBoardEntity = reviewBoardRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         if(likedHistoryEntity.isPresent()) {
             likeHistoryRepository.delete(likedHistoryEntity.get());
-            reviewBoardRepository.decreaseLikeCnt(id);
+            reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() - 1);
+            reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        reviewBoardEntity = EntityUtils.setIsAuthor(reviewBoardEntity, accountId);
+        reviewBoardEntity = EntityUtils.setIsLiked(reviewBoardEntity, accountId, LikeableTables.REVIEW_BOARD, id);
+        return new ResponseEntity<>(reviewBoardEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -96,12 +121,18 @@ public class LikePostCommentService {
                 accountId, likeableTable, commentId
         );
 
+        FreeBoardCommentEntity freeBoardCommentEntity = freeBoardCommentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException(COMMENT_NOT_FOUND)
+        );
         if(!likedHistoryEntity.isPresent()) {
             LikedHistoryEntity newLikedHistoryEntity = new LikedHistoryEntity(accountId, likeableTable, commentId);
             likeHistoryRepository.save(newLikedHistoryEntity);
-            freeBoardCommentRepository.increaseLikeCnt(commentId);
+            freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() + 1);
+            freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        freeBoardCommentEntity = EntityUtils.setIsAuthor(freeBoardCommentEntity, accountId);
+        freeBoardCommentEntity = EntityUtils.setIsLiked(freeBoardCommentEntity, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
+        return new ResponseEntity<>(freeBoardCommentEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -111,11 +142,17 @@ public class LikePostCommentService {
                 accountId, likeableTable, commentId
         );
 
+        FreeBoardCommentEntity freeBoardCommentEntity = freeBoardCommentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException(COMMENT_NOT_FOUND)
+        );
         if(likedHistoryEntity.isPresent()) {
             likeHistoryRepository.delete(likedHistoryEntity.get());
-            freeBoardCommentRepository.decreaseLikeCnt(commentId);
+            freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() - 1);
+            freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        freeBoardCommentEntity = EntityUtils.setIsAuthor(freeBoardCommentEntity, accountId);
+        freeBoardCommentEntity = EntityUtils.setIsLiked(freeBoardCommentEntity, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
+        return new ResponseEntity<>(freeBoardCommentEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -125,12 +162,18 @@ public class LikePostCommentService {
                 accountId, likeableTable, commentId
         );
 
+        ReviewBoardCommentEntity reviewBoardCommentEntity = reviewBoardCommentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException(COMMENT_NOT_FOUND)
+        );
         if(!likedHistoryEntity.isPresent()) {
             LikedHistoryEntity newLikedHistoryEntity = new LikedHistoryEntity(accountId, likeableTable, commentId);
             likeHistoryRepository.save(newLikedHistoryEntity);
-            reviewBoardCommentRepository.increaseLikeCnt(commentId);
+            reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() + 1);
+            reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        reviewBoardCommentEntity = EntityUtils.setIsAuthor(reviewBoardCommentEntity, accountId);
+        reviewBoardCommentEntity = EntityUtils.setIsLiked(reviewBoardCommentEntity, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
+        return new ResponseEntity<>(reviewBoardCommentEntity, HttpStatus.ACCEPTED);
     }
 
     @Transactional
@@ -140,10 +183,16 @@ public class LikePostCommentService {
                 accountId, likeableTable, commentId
         );
 
+        ReviewBoardCommentEntity reviewBoardCommentEntity = reviewBoardCommentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException(COMMENT_NOT_FOUND)
+        );
         if(likedHistoryEntity.isPresent()) {
             likeHistoryRepository.delete(likedHistoryEntity.get());
-            reviewBoardCommentRepository.decreaseLikeCnt(commentId);
+            reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() - 1);
+            reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        reviewBoardCommentEntity = EntityUtils.setIsAuthor(reviewBoardCommentEntity, accountId);
+        reviewBoardCommentEntity = EntityUtils.setIsLiked(reviewBoardCommentEntity, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
+        return new ResponseEntity<>(reviewBoardCommentEntity, HttpStatus.ACCEPTED);
     }
 }
