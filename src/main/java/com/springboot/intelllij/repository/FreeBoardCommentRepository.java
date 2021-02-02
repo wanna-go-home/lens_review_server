@@ -20,12 +20,4 @@ public interface FreeBoardCommentRepository extends JpaRepository<FreeBoardComme
     List<FreeBoardCommentEntity> findByAccountId(Integer accountId);
 
     void deleteByPostId(Integer postId);
-
-    @Modifying
-    @Query("UPDATE FreeBoardCommentEntity e SET e.likeCnt = e.likeCnt + 1 WHERE e.id = :id")
-    void increaseLikeCnt(@Param(value = "id") Integer id);
-
-    @Modifying
-    @Query("UPDATE FreeBoardCommentEntity e SET e.likeCnt = e.likeCnt - 1 WHERE e.id = :id")
-    void decreaseLikeCnt(@Param(value = "id") Integer id);
 }

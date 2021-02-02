@@ -20,12 +20,4 @@ public interface ReviewBoardCommentRepository extends JpaRepository<ReviewBoardC
     List<ReviewBoardCommentEntity> findByBundleIdAndDepthOrderByCreatedAtAsc(Integer bundleId, Integer depth);
 
     void deleteByPostId(Integer postId);
-
-    @Modifying
-    @Query("UPDATE ReviewBoardCommentEntity e SET e.likeCnt = e.likeCnt + 1 WHERE e.id = :id")
-    void increaseLikeCnt(@Param(value = "id") Integer id);
-
-    @Modifying
-    @Query("UPDATE ReviewBoardCommentEntity e SET e.likeCnt = e.likeCnt - 1 WHERE e.id = :id")
-    void decreaseLikeCnt(@Param(value = "id") Integer id);
 }
