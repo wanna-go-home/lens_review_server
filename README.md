@@ -1,3 +1,7 @@
+# Git Flow
+
+![git_flow](./git flow.png)
+
 # 빌드 하는법
 
 ## Local
