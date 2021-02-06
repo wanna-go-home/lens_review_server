@@ -7,8 +7,6 @@ import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +34,9 @@ public class LikePostCommentService {
     ReviewBoardCommentRepository reviewBoardCommentRepository;
 
     @Transactional
-    public ResponseEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public FreeBoardViewEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
+        AccountEntity user= UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, id
         );
@@ -49,14 +48,16 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
-        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return new ResponseEntity<>(freeBoardEntity, HttpStatus.ACCEPTED);
+        FreeBoardViewEntity freeBoardViewEntity = new FreeBoardViewEntity(freeBoardEntity, user.getNickname());
+        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
+        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardViewEntity;
     }
 
     @Transactional
-    public ResponseEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public FreeBoardViewEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, id
         );
@@ -67,14 +68,16 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() - 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
-        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return new ResponseEntity<>(freeBoardEntity, HttpStatus.ACCEPTED);
+        FreeBoardViewEntity freeBoardViewEntity = new FreeBoardViewEntity(freeBoardEntity, user.getNickname());
+        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
+        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardViewEntity;
     }
 
     @Transactional
-    public ResponseEntity likeReviewBoardPost(LikeableTables likeableTable, Integer id) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public ReviewBoardViewEntity likeReviewBoardPost(LikeableTables likeableTable, Integer id) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, id
         );
@@ -88,14 +91,16 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() + 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        reviewBoardEntity = EntityUtils.setIsAuthor(reviewBoardEntity, accountId);
-        reviewBoardEntity = EntityUtils.setIsLiked(reviewBoardEntity, accountId, LikeableTables.REVIEW_BOARD, id);
-        return new ResponseEntity<>(reviewBoardEntity, HttpStatus.ACCEPTED);
+        ReviewBoardViewEntity reviewBoardViewEntity = new ReviewBoardViewEntity(reviewBoardEntity, user.getNickname());
+        reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
+        reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
+        return reviewBoardViewEntity;
     }
 
     @Transactional
-    public ResponseEntity unlikeReviewBoardPost(LikeableTables likeableTable, Integer id) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public ReviewBoardViewEntity unlikeReviewBoardPost(LikeableTables likeableTable, Integer id) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, id
         );
@@ -108,14 +113,16 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() - 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        reviewBoardEntity = EntityUtils.setIsAuthor(reviewBoardEntity, accountId);
-        reviewBoardEntity = EntityUtils.setIsLiked(reviewBoardEntity, accountId, LikeableTables.REVIEW_BOARD, id);
-        return new ResponseEntity<>(reviewBoardEntity, HttpStatus.ACCEPTED);
+        ReviewBoardViewEntity reviewBoardViewEntity = new ReviewBoardViewEntity(reviewBoardEntity, user.getNickname());
+        reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
+        reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
+        return reviewBoardViewEntity;
     }
 
     @Transactional
-    public ResponseEntity likeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public CommentOutputDTO likeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
 
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
@@ -130,14 +137,16 @@ public class LikePostCommentService {
             freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() + 1);
             freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        freeBoardCommentEntity = EntityUtils.setIsAuthor(freeBoardCommentEntity, accountId);
-        freeBoardCommentEntity = EntityUtils.setIsLiked(freeBoardCommentEntity, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
-        return new ResponseEntity<>(freeBoardCommentEntity, HttpStatus.ACCEPTED);
+        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, user.getNickname());
+        comment = EntityUtils.setIsAuthor(comment, accountId);
+        comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
+        return comment;
     }
 
     @Transactional
-    public ResponseEntity unlikeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public CommentOutputDTO unlikeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -150,14 +159,16 @@ public class LikePostCommentService {
             freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() - 1);
             freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        freeBoardCommentEntity = EntityUtils.setIsAuthor(freeBoardCommentEntity, accountId);
-        freeBoardCommentEntity = EntityUtils.setIsLiked(freeBoardCommentEntity, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
-        return new ResponseEntity<>(freeBoardCommentEntity, HttpStatus.ACCEPTED);
+        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, user.getNickname());
+        comment = EntityUtils.setIsAuthor(comment, accountId);
+        comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
+        return comment;
     }
 
     @Transactional
-    public ResponseEntity likeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public CommentOutputDTO likeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -171,14 +182,16 @@ public class LikePostCommentService {
             reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() + 1);
             reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        reviewBoardCommentEntity = EntityUtils.setIsAuthor(reviewBoardCommentEntity, accountId);
-        reviewBoardCommentEntity = EntityUtils.setIsLiked(reviewBoardCommentEntity, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
-        return new ResponseEntity<>(reviewBoardCommentEntity, HttpStatus.ACCEPTED);
+        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname());
+        comment = EntityUtils.setIsAuthor(comment, accountId);
+        comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
+        return comment;
     }
 
     @Transactional
-    public ResponseEntity unlikeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
+    public CommentOutputDTO unlikeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
+        AccountEntity user = UserUtils.getUserEntity();
+        Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -191,8 +204,9 @@ public class LikePostCommentService {
             reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() - 1);
             reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        reviewBoardCommentEntity = EntityUtils.setIsAuthor(reviewBoardCommentEntity, accountId);
-        reviewBoardCommentEntity = EntityUtils.setIsLiked(reviewBoardCommentEntity, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
-        return new ResponseEntity<>(reviewBoardCommentEntity, HttpStatus.ACCEPTED);
+        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname());
+        comment = EntityUtils.setIsAuthor(comment, accountId);
+        comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
+        return comment;
     }
 }
