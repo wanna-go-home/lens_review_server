@@ -1,6 +1,6 @@
 # Git Flow
 
-![git_flow](./git flow.png)
+![git_flow](./Git Flow.png)
 
 # 빌드 하는법
 
