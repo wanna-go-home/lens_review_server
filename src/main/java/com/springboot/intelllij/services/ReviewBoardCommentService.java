@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
+import com.springboot.intelllij.repository.AccountRepository;
 import com.springboot.intelllij.repository.ReviewBoardCommentRepository;
 import com.springboot.intelllij.repository.ReviewBoardRepository;
 import com.springboot.intelllij.utils.EntityUtils;
@@ -19,14 +20,19 @@ import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
 
 @Service
 public class ReviewBoardCommentService {
 
     @Autowired
     ReviewBoardCommentRepository reviewBoardCommentRepo;
+
     @Autowired
     ReviewBoardRepository reviewBoardRepo;
+
+    @Autowired
+    AccountRepository accountRepo;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -74,13 +80,17 @@ public class ReviewBoardCommentService {
 
         for(ReviewBoardCommentEntity commentEntity : comments) {
             List<ReviewBoardCommentEntity> childCommentList = reviewBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(commentEntity.getId(),CHILD_COMMENT_DEPTH);
-            resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
+            AccountEntity author = accountRepo.findById(commentEntity.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+            resultCommentList.add(new CommentOutputDTO(commentEntity, author.getNickname()));
 
             if(childCommentList.isEmpty()) continue;
 
             for(int i = 0; i < childCommentList.size(); i++) {
                 if(i >= COMMENT_MAX) break;
-                resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), user.getNickname()));
+                AccountEntity childCommentAuthor = accountRepo.findById(childCommentList.get(i).getAccountId())
+                        .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+                resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), childCommentAuthor.getNickname()));
             }
         }
 
@@ -95,10 +105,14 @@ public class ReviewBoardCommentService {
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         List<ReviewBoardCommentEntity> commentsOfComment = reviewBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(originalComment.getId(),CHILD_COMMENT_DEPTH);
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
+        AccountEntity author = accountRepo.findById(originalComment.getAccountId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
-        resultCommentList.add(new CommentOutputDTO(originalComment, user.getNickname()));
+        resultCommentList.add(new CommentOutputDTO(originalComment, author.getNickname()));
         for(ReviewBoardCommentEntity bundle: commentsOfComment) {
-            resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
+            AccountEntity bundleAuthor = accountRepo.findById(bundle.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+            resultCommentList.add(new CommentOutputDTO(bundle, bundleAuthor.getNickname()));
         }
 
         resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.REVIEW_BOARD_COMMENT);

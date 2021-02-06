@@ -3,6 +3,7 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.exceptions.NotFoundException;
+import com.springboot.intelllij.repository.AccountRepository;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
 import com.springboot.intelllij.repository.FreeBoardRepository;
 import com.springboot.intelllij.utils.EntityUtils;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.*;
 
 @Service
 public class FreeBoardCommentService {
@@ -28,6 +28,9 @@ public class FreeBoardCommentService {
 
     @Autowired
     FreeBoardRepository freeBoardRepo;
+
+    @Autowired
+    AccountRepository accountRepo;
 
     private final int COMMENT_MAX = 3;
     private final int COMMENT_DEPTH = 0;
@@ -74,14 +77,19 @@ public class FreeBoardCommentService {
 
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
         for(FreeBoardCommentEntity commentEntity : comments) {
-            List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(commentEntity.getId(), CHILD_COMMENT_DEPTH);
-            resultCommentList.add(new CommentOutputDTO(commentEntity, user.getNickname()));
+            AccountEntity author = accountRepo.findById(commentEntity.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+            resultCommentList.add(new CommentOutputDTO(commentEntity, author.getNickname()));
+
+            List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo
+                    .findByBundleIdAndDepthOrderByCreatedAtAsc(commentEntity.getId(), CHILD_COMMENT_DEPTH);
 
             if(childCommentList.isEmpty()) continue;
 
             for(int i = 0; i < childCommentList.size(); i++) {
-                if(i >= COMMENT_MAX) break;
-                resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), user.getNickname()));
+                AccountEntity childCommentAuthor = accountRepo.findById(childCommentList.get(i).getAccountId())
+                        .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+                resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), childCommentAuthor.getNickname()));
             }
         }
 
@@ -97,11 +105,16 @@ public class FreeBoardCommentService {
         List<FreeBoardCommentEntity> childCommentList = freeBoardCommentRepo.findByBundleIdAndDepthOrderByCreatedAtAsc(
                 originalComment.getId(), CHILD_COMMENT_DEPTH
         );
+        AccountEntity author = accountRepo.findById(originalComment.getAccountId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         List<CommentOutputDTO> resultCommentList = new ArrayList<>();
-        resultCommentList.add(new CommentOutputDTO(originalComment, user.getNickname()));
+        resultCommentList.add(new CommentOutputDTO(originalComment, author.getNickname()));
         for(FreeBoardCommentEntity bundle: childCommentList) {
-            resultCommentList.add(new CommentOutputDTO(bundle, user.getNickname()));
+
+            AccountEntity bundleAuthor = accountRepo.findById(bundle.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+            resultCommentList.add(new CommentOutputDTO(bundle, bundleAuthor.getNickname()));
         }
         resultCommentList = EntityUtils.setIsLiked(resultCommentList, user.getId(), LikeableTables.FREE_BOARD_COMMENT);
         return (List<CommentOutputDTO>) EntityUtils.setIsAuthor(resultCommentList, user.getId());
