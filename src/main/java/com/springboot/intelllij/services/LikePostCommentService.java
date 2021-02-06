@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.COMMENT_NOT_FOUND;
-import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.*;
 
 @Service
 public class LikePostCommentService {
@@ -25,7 +24,13 @@ public class LikePostCommentService {
     FreeBoardRepository freeBoardRepository;
 
     @Autowired
+    FreeBoardPreviewRepository freeBoardPreviewRepository;
+
+    @Autowired
     ReviewBoardRepository reviewBoardRepository;
+
+    @Autowired
+    ReviewBoardPreviewRepository reviewBoardPreviewRepository;
 
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
@@ -33,14 +38,15 @@ public class LikePostCommentService {
     @Autowired
     ReviewBoardCommentRepository reviewBoardCommentRepository;
 
+    @Autowired
+    AccountRepository accountRepository;
+
     @Transactional
     public FreeBoardViewEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user= UserUtils.getUserEntity();
         Integer accountId = user.getId();
-        Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
-                accountId, likeableTable, id
-        );
-
+        Optional<LikedHistoryEntity> likedHistoryEntity =
+                likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(accountId, likeableTable, id);
         FreeBoardEntity freeBoardEntity = freeBoardRepository.findById(id).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         if(!likedHistoryEntity.isPresent()) {
             LikedHistoryEntity newLikedHistoryEntity = new LikedHistoryEntity(accountId, likeableTable, id);
@@ -48,7 +54,9 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = new FreeBoardViewEntity(freeBoardEntity, user.getNickname());
+        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
         freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
         return freeBoardViewEntity;
@@ -68,7 +76,9 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() - 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = new FreeBoardViewEntity(freeBoardEntity, user.getNickname());
+        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
         freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
         return freeBoardViewEntity;
@@ -91,7 +101,9 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() + 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        ReviewBoardViewEntity reviewBoardViewEntity = new ReviewBoardViewEntity(reviewBoardEntity, user.getNickname());
+        ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
         reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
         return reviewBoardViewEntity;
@@ -113,7 +125,9 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() - 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        ReviewBoardViewEntity reviewBoardViewEntity = new ReviewBoardViewEntity(reviewBoardEntity, user.getNickname());
+        ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(POST_NOT_FOUND)
+        );
         reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
         reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
         return reviewBoardViewEntity;
@@ -121,12 +135,10 @@ public class LikePostCommentService {
 
     @Transactional
     public CommentOutputDTO likeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        AccountEntity user = UserUtils.getUserEntity();
-        Integer accountId = user.getId();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
 
-        Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
-                accountId, likeableTable, commentId
-        );
+        Optional<LikedHistoryEntity> likedHistoryEntity =
+                likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(accountId, likeableTable, commentId);
 
         FreeBoardCommentEntity freeBoardCommentEntity = freeBoardCommentRepository.findById(commentId).orElseThrow(
                 () -> new NotFoundException(COMMENT_NOT_FOUND)
@@ -137,7 +149,10 @@ public class LikePostCommentService {
             freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() + 1);
             freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, user.getNickname());
+        AccountEntity author = accountRepository.findById(freeBoardCommentEntity.getAccountId()).orElseThrow(
+                () -> new NotFoundException(USER_NOT_FOUND)
+        );
+        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, author.getNickname());
         comment = EntityUtils.setIsAuthor(comment, accountId);
         comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
         return comment;
@@ -145,8 +160,7 @@ public class LikePostCommentService {
 
     @Transactional
     public CommentOutputDTO unlikeFreeBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        AccountEntity user = UserUtils.getUserEntity();
-        Integer accountId = user.getId();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -159,7 +173,10 @@ public class LikePostCommentService {
             freeBoardCommentEntity.setLikeCnt(freeBoardCommentEntity.getLikeCnt() - 1);
             freeBoardCommentEntity = freeBoardCommentRepository.save(freeBoardCommentEntity);
         }
-        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, user.getNickname());
+        AccountEntity author = accountRepository.findById(freeBoardCommentEntity.getAccountId()).orElseThrow(
+                () -> new NotFoundException(USER_NOT_FOUND)
+        );
+        CommentOutputDTO comment = new CommentOutputDTO(freeBoardCommentEntity, author.getNickname());
         comment = EntityUtils.setIsAuthor(comment, accountId);
         comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.FREE_BOARD_COMMENT, commentId);
         return comment;
@@ -167,8 +184,7 @@ public class LikePostCommentService {
 
     @Transactional
     public CommentOutputDTO likeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        AccountEntity user = UserUtils.getUserEntity();
-        Integer accountId = user.getId();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -182,7 +198,10 @@ public class LikePostCommentService {
             reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() + 1);
             reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname());
+        AccountEntity author = accountRepository.findById(reviewBoardCommentEntity.getAccountId()).orElseThrow(
+                () -> new NotFoundException(USER_NOT_FOUND)
+        );
+        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, author.getNickname());
         comment = EntityUtils.setIsAuthor(comment, accountId);
         comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
         return comment;
@@ -190,8 +209,7 @@ public class LikePostCommentService {
 
     @Transactional
     public CommentOutputDTO unlikeReviewBoardComment(LikeableTables likeableTable, Integer postId, Integer commentId) {
-        AccountEntity user = UserUtils.getUserEntity();
-        Integer accountId = user.getId();
+        Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
                 accountId, likeableTable, commentId
         );
@@ -204,7 +222,10 @@ public class LikePostCommentService {
             reviewBoardCommentEntity.setLikeCnt(reviewBoardCommentEntity.getLikeCnt() - 1);
             reviewBoardCommentEntity = reviewBoardCommentRepository.save(reviewBoardCommentEntity);
         }
-        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, user.getNickname());
+        AccountEntity author = accountRepository.findById(reviewBoardCommentEntity.getAccountId()).orElseThrow(
+                () -> new NotFoundException(USER_NOT_FOUND)
+        );
+        CommentOutputDTO comment = new CommentOutputDTO(reviewBoardCommentEntity, author.getNickname());
         comment = EntityUtils.setIsAuthor(comment, accountId);
         comment = EntityUtils.setIsLiked(comment, accountId, LikeableTables.REVIEW_BOARD_COMMENT, commentId);
         return comment;
