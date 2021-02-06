@@ -32,4 +32,17 @@ public class ReviewBoardViewEntity extends BoardBaseEntity {
         this.setNickname(reviewBoardEntity.getNickname());
         this.setLensId(reviewBoardEntity.getLensId());
     }
+
+    public ReviewBoardViewEntity(ReviewBoardEntity reviewBoardEntity, String nickname) {
+        this.setId(reviewBoardEntity.getId());
+        this.setAccountId(reviewBoardEntity.getAccountId());
+        this.setContent(reviewBoardEntity.getContent());
+        this.setLikeCnt(reviewBoardEntity.getLikeCnt());
+        this.setCreatedAt(reviewBoardEntity.getCreatedAt());
+        this.setTitle(reviewBoardEntity.getTitle());
+        this.setViewCnt(reviewBoardEntity.getViewCnt());
+        this.setReplyCnt(reviewBoardEntity.getReplyCnt());
+        this.nickname = nickname;
+        this.setLensId(reviewBoardEntity.getLensId());
+    }
 }
