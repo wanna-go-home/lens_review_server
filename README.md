@@ -48,6 +48,7 @@ docker run -d -p 8080:8080 --name lens springio/gs-spring-boot-docker
     ![github_tags](./img/github_tags.png)
     
   + 새 tag를 발행하고 싶은 경우 Release 항목에서 Draft new release를 눌러서 새 Release를 만들어서 그 Release의 tag를 쓰도록 한다
+  + tag의 target branch는 release를 사용 하도록 한다
     ![github_release](./img/github_releae.png)
     ![github_release_detail](./img/github_release_detail.png)
 
