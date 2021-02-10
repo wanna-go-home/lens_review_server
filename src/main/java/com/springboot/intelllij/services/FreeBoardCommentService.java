@@ -87,6 +87,7 @@ public class FreeBoardCommentService {
             if(childCommentList.isEmpty()) continue;
 
             for(int i = 0; i < childCommentList.size(); i++) {
+                if(i >= COMMENT_MAX) break;
                 AccountEntity childCommentAuthor = accountRepo.findById(childCommentList.get(i).getAccountId())
                         .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
                 resultCommentList.add(new CommentOutputDTO(childCommentList.get(i), childCommentAuthor.getNickname()));
