@@ -3,7 +3,7 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.CommentOutputDTO;
-import com.springboot.intelllij.domain.FreeBoardViewEntity;
+import com.springboot.intelllij.domain.FreeBoardEntity;
 import com.springboot.intelllij.domain.ReviewBoardViewEntity;
 import com.springboot.intelllij.services.LikePostCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ public class LikePostCommentController {
 
     @PostMapping(value =  RESTPath.FREE_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public FreeBoardViewEntity likeFreeBoardPost(@PathVariable(name = "id") Integer id) {
+    public FreeBoardEntity likeFreeBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.likeFreeboardPost(LikeableTables.FREE_BOARD, id);
     }
 
     @DeleteMapping(value = RESTPath.FREE_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public FreeBoardViewEntity unlikeFreeBoardPost(@PathVariable(name = "id") Integer id) {
+    public FreeBoardEntity unlikeFreeBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.unlikeFreeBoardPost(LikeableTables.FREE_BOARD, id);
     }
 

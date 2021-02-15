@@ -3,7 +3,7 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.AccountService;
-import com.springboot.intelllij.services.FreeBoardPreviewService;
+import com.springboot.intelllij.services.FreeBoardService;
 import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class UserController {
     AccountService accountService;
 
     @Autowired
-    FreeBoardPreviewService freeBoardPreviewService;
+    FreeBoardService freeBoardService;
 
     @Autowired
     ReviewBoardPreviewService reviewBoardPreviewService;
@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/article/me")
-    public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
+    public List<FreeBoardEntity>  getMyFreeBoardPreviews() { return freeBoardService.getMyAllPreview(); }
 
     @GetMapping(value = "/review/me")
     public List<ReviewBoardViewWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }

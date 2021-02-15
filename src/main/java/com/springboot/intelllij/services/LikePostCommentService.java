@@ -24,9 +24,6 @@ public class LikePostCommentService {
     FreeBoardRepository freeBoardRepository;
 
     @Autowired
-    FreeBoardPreviewRepository freeBoardPreviewRepository;
-
-    @Autowired
     ReviewBoardRepository reviewBoardRepository;
 
     @Autowired
@@ -42,7 +39,7 @@ public class LikePostCommentService {
     AccountRepository accountRepository;
 
     @Transactional
-    public FreeBoardViewEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
+    public FreeBoardEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user= UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity =
@@ -54,17 +51,13 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
-        );
-        freeBoardViewEntity.setLikeCnt(freeBoardEntity.getLikeCnt());
-        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
-        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return freeBoardViewEntity;
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardEntity;
     }
 
     @Transactional
-    public FreeBoardViewEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
+    public FreeBoardEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user = UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
@@ -77,13 +70,9 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() - 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
-        );
-        freeBoardViewEntity.setLikeCnt(freeBoardEntity.getLikeCnt());
-        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
-        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return freeBoardViewEntity;
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardEntity;
     }
 
     @Transactional
