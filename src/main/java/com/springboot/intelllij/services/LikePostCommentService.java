@@ -57,6 +57,7 @@ public class LikePostCommentService {
         FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(POST_NOT_FOUND)
         );
+        freeBoardViewEntity.setLikeCnt(freeBoardEntity.getLikeCnt());
         freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
         freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
         return freeBoardViewEntity;
@@ -79,6 +80,7 @@ public class LikePostCommentService {
         FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(POST_NOT_FOUND)
         );
+        freeBoardViewEntity.setLikeCnt(freeBoardEntity.getLikeCnt());
         freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
         freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
         return freeBoardViewEntity;
@@ -104,6 +106,7 @@ public class LikePostCommentService {
         ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(POST_NOT_FOUND)
         );
+        reviewBoardViewEntity.setLikeCnt(reviewBoardEntity.getLikeCnt());
         reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
         reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
         return reviewBoardViewEntity;
@@ -128,6 +131,7 @@ public class LikePostCommentService {
         ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(POST_NOT_FOUND)
         );
+        reviewBoardViewEntity.setLikeCnt(reviewBoardEntity.getLikeCnt());
         reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
         reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
         return reviewBoardViewEntity;
