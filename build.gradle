@@ -38,9 +38,12 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-
 }
 
 test {
 	useJUnitPlatform()
+}
+
+bootRun {
+	systemProperties System.properties
 }

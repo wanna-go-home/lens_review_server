@@ -7,10 +7,20 @@
 ## Local
 
 ### Intellij
-- 이 프로젝트는 Spring Boot 기반으로 되어있어 실행이 간편하다
-- checkout 받고 그냥 Boot run 해주면 된다
+- Profile이 3개로 나뉘어있고(dev, qa, release) 아무런 설정을 하지 않고 실행시, dev가 적용된다 
+- dev는 그냥 Boot run 해주면 된다
 
 ![intellij_build](./img/intellij_build.png)
+
+- qa와 release는 새 configuration을 만들어줘야 한다
+
+![intellij_configuration](./img/intellij_configuration.png)
+
+![intellij_qa](./img/intellij_qa.png)
+
+![intellij_release](./img/intellij_release.png)
+
+- 위와 같이 구성 하고, 원하는 프로파일로 실행 한다
 
 - http://localhost:8080/swagger-ui.html 로 접속하면 swagger 실행이 확인 가능하다
   

@@ -1,0 +1,100 @@
+application:
+  version: 1.0.0
+  title: lens_review_server
+
+spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+  http:
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+
+  datasource:
+    sql-script-encoding: utf-8
+    initialization-mode: always
+    platform: postgres
+    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://go-home.caa0s7nh3dxo.ap-northeast-2.rds.amazonaws.com:5432/dev
+    username: postgres
+    password: wanna-go-home
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+---
+spring:
+  profiles: release
+  http:
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+
+  datasource:
+    sql-script-encoding: utf-8
+    initialization-mode: always
+    platform: postgres
+    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://go-home.caa0s7nh3dxo.ap-northeast-2.rds.amazonaws.com:5432/go_home
+    username: postgres
+    password: wanna-go-home
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+---
+spring:
+  profiles: qa
+  http:
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+
+  datasource:
+    sql-script-encoding: utf-8
+    initialization-mode: always
+    platform: postgres
+    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://go-home.caa0s7nh3dxo.ap-northeast-2.rds.amazonaws.com:5432/qa
+    username: postgres
+    password: wanna-go-home
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
