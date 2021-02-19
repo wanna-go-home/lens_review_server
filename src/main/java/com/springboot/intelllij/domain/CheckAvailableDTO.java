@@ -10,5 +10,6 @@ public class CheckAvailableDTO {
     public CheckAvailableDTO(boolean isAvailable, int checkCode) {
         this.isAvailable = isAvailable;
         this.checkCode = checkCode;
+
     }
 }
