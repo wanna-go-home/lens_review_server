@@ -54,6 +54,7 @@ public class LikePostCommentService {
         freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
         freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
         return freeBoardEntity;
+
     }
 
     @Transactional

@@ -5,10 +5,11 @@ import lombok.Getter;
 @Getter
 public class CheckAvailableDTO {
     boolean isAvailable;
-    int check_code;
+    int checkCode;
 
-    public CheckAvailableDTO(boolean isAvailable, int check_code) {
+    public CheckAvailableDTO(boolean isAvailable, int checkCode) {
         this.isAvailable = isAvailable;
-        this.check_code = check_code;
+        this.checkCode = checkCode;
+
     }
 }
