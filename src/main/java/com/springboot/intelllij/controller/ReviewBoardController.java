@@ -3,7 +3,6 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.ReviewBoardCommentService;
-import com.springboot.intelllij.services.ReviewBoardPreviewService;
 import com.springboot.intelllij.services.ReviewBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,16 +19,15 @@ public class ReviewBoardController {
     ReviewBoardService reviewBoardService;
 
     @Autowired
-    ReviewBoardPreviewService reviewBoardPreviewService;
-
-    @Autowired
     ReviewBoardCommentService reviewBoardCommentService;
 
     @GetMapping
-    public List<ReviewBoardViewWithLensInfoEntity> getReviewBoardPreview() { return reviewBoardPreviewService.getAllPreview(); }
+    public List<ReviewBoardWithLensInfoEntity> getReviewBoardPreview() {
+        return reviewBoardService.getAllPreview();
+    }
 
     @GetMapping(value = RESTPath.ID)
-    public ReviewBoardViewWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
+    public ReviewBoardWithLensInfoEntity getReviewBoardById(@PathVariable(name = "id") Integer id) {
         return reviewBoardService.getReviewBoardById(id);
     }
 
@@ -61,9 +59,9 @@ public class ReviewBoardController {
     }
 
     @GetMapping(value = RESTPath.COMMENT_ID)
-    public List<CommentOutputDTO> getReviewBoardAllComments(@PathVariable(name = "id") Integer postId,
-                                                                @PathVariable(name = "commentId") Integer commentId) {
-        return reviewBoardCommentService.getAllCommentByPostId(postId,commentId);
+    public List<CommentOutputDTO> getCommentByPostIdAndCommentId(
+            @PathVariable(name = "id") Integer postId, @PathVariable(name = "commentId") Integer commentId) {
+        return reviewBoardCommentService.getAllCommentByPostId(postId, commentId);
     }
 
     @PutMapping(value = RESTPath.COMMENT_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
