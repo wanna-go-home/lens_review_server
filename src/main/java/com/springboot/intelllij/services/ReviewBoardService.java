@@ -67,6 +67,16 @@ public class ReviewBoardService {
         return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
+    @Transactional
+    public List<ReviewBoardEntity> getReviewBoardByLensId(Integer lensId) {
+        List<ReviewBoardEntity> reviewBoardEntityList = reviewBoardRepo.findByLensId(lensId);
+        reviewBoardEntityList.forEach(reviewBoardEntity -> {
+            reviewBoardEntity.increaseViewCnt();
+            reviewBoardRepo.save(reviewBoardEntity);
+        });
+        return reviewBoardEntityList;
+    }
+
     public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
         ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto, accountId);

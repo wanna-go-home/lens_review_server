@@ -30,6 +30,8 @@ public abstract class BoardBaseEntity extends BaseEntity {
         this.content = content;
     }
 
+    public void increaseViewCnt() { this.viewCnt++; }
+
     public void increaseReplyCnt() {
         this.replyCnt++;
     }

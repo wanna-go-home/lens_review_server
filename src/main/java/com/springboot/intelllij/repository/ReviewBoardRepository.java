@@ -9,7 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReviewBoardRepository extends JpaRepository<ReviewBoardEntity, Integer> {
+
     List<ReviewBoardEntity> findByAccountId(Integer accountId);
+
+    List<ReviewBoardEntity> findByLensId(Integer lensId);
 
     @Modifying
     @Query("update ReviewBoardEntity e set e.title = :title, e.content = :content where e.id = :id")

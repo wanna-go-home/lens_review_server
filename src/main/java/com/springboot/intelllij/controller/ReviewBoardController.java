@@ -31,6 +31,11 @@ public class ReviewBoardController {
         return reviewBoardService.getReviewBoardById(id);
     }
 
+    @GetMapping(value = RESTPath.LENS_INFO_ID)
+    public List<ReviewBoardEntity> getReviewBoardByLensId(@PathVariable(name = "lensId") Integer lensId) {
+        return reviewBoardService.getReviewBoardByLensId(lensId);
+    }
+
     @PutMapping(value = RESTPath.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateReviewBoardById(
             @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
