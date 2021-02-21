@@ -12,6 +12,7 @@ public class RESTPath {
     public static final String REVIEW_BOARD = API_PREFIX + BOARDS + "/review-board";
 
     public static final String ID = "/{id}";
+    public static final String LENS_INFO_ID = "/lens/{lensId}";
     public static final String COMMENTS = ID + "/comments";
     public static final String COMMENT_ID = COMMENTS + "/{commentId}";
 
