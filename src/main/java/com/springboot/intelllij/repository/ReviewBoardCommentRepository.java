@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReviewBoardCommentRepository extends JpaRepository<ReviewBoardCommentEntity, Integer> {
-    List<ReviewBoardCommentEntity> findByPostId(Integer integer);
+    List<ReviewBoardCommentEntity> findByPostId(Integer postId);
 
     List<ReviewBoardCommentEntity> findByAccountId(Integer accountId);
 

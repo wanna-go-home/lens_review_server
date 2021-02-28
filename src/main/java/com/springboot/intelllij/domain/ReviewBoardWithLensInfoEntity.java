@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReviewBoardViewWithLensInfoEntity extends ReviewBoardViewEntity {
+public class ReviewBoardWithLensInfoEntity extends ReviewBoardEntity {
 
     private LensPreviewEntity lensPreviewEntity;
 
-    public ReviewBoardViewWithLensInfoEntity(ReviewBoardViewEntity reviewBoardEntity, LensPreviewEntity lensPreviewEntity) {
+    public ReviewBoardWithLensInfoEntity(ReviewBoardEntity reviewBoardEntity, LensPreviewEntity lensPreviewEntity) {
         super(reviewBoardEntity);
         this.lensPreviewEntity = lensPreviewEntity;
     }

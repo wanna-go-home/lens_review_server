@@ -1,5 +1,6 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.constant.CheckUserInfoEnum;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.CommentComparator;
@@ -8,7 +9,6 @@ import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,16 +48,26 @@ public class AccountService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public ResponseEntity checkId(String email) {
-        if (userRepo.findByAccountEmail(email).isPresent() || !StringValidationUtils.isValidEmail(email)) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    public CheckAvailableDTO checkId(String email) {
+        CheckAvailableDTO checkAvailable;
+        if (userRepo.findByAccountEmail(email).isPresent()) {
+            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
+        } else if (!StringValidationUtils.isValidEmail(email)) {
+            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.INVALID.ordinal());
+        } else {
+            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return checkAvailable;
     }
 
-    public ResponseEntity checkNickName(String nickName) {
-        if (isDuplicatedNickName(nickName)) return ResponseEntity.status(HttpStatus.OK).build();
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    public CheckAvailableDTO checkNickName(String nickName) {
+        CheckAvailableDTO checkAvailable;
+        if (isDuplicatedNickName(nickName)) {
+            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
+        } else {
+            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
+        }
+        return checkAvailable;
     }
 
     public ResponseEntity changeNickName(UserModifyDTO userModifyDTO) {
@@ -74,29 +84,42 @@ public class AccountService {
     private boolean isDuplicatedNickName(String nickName) {
         List<AccountEntity> nickNameList = userRepo.findByNickname(nickName);
         if(nickNameList.isEmpty()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
-    public ResponseEntity checkPhoneNumber(String phoneNumber) {
+    public CheckAvailableDTO checkPhoneNumber(String phoneNumber) {
+        CheckAvailableDTO checkAvailable;
         List<AccountEntity> phoneNumList = userRepo.findByPhoneNum(phoneNumber);
-        if(phoneNumList.isEmpty() || !StringValidationUtils.isValidPhoneNumber(phoneNumber)) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+        if(!phoneNumList.isEmpty()) {
+            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
+        } else if (!StringValidationUtils.isValidPhoneNumber(phoneNumber)) {
+            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.INVALID.ordinal());
+        } else {
+            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        return checkAvailable;
     }
 
-    public ResponseEntity signup(AccountEntity accountEntity) {
-        if(checkId(accountEntity.getAccountEmail()).getStatusCode().equals(HttpStatus.OK)
-                && checkNickName(accountEntity.getNickname()).getStatusCode().equals(HttpStatus.OK)
-                && checkPhoneNumber(accountEntity.getPhoneNum()).getStatusCode().equals(HttpStatus.OK)) {
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            accountEntity.setAccountPw(bCryptPasswordEncoder.encode(accountEntity.getAccountPw()));
-            userRepo.save(accountEntity);
-            return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<CheckAvailableDTO> signup(AccountEntity accountEntity) {
+        CheckAvailableDTO checkAvailable;
+        checkAvailable = checkId(accountEntity.getAccountEmail());
+        if (!checkAvailable.isAvailable()) {
+            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        checkAvailable = checkNickName(accountEntity.getNickname());
+        if (!checkAvailable.isAvailable()) {
+            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
+        }
+        checkAvailable = checkPhoneNumber(accountEntity.getPhoneNum());
+        if (!checkAvailable.isAvailable()) {
+            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
+        }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        accountEntity.setAccountPw(bCryptPasswordEncoder.encode(accountEntity.getAccountPw()));
+        userRepo.save(accountEntity);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public UserInfoDTO getUserInfo() {

@@ -3,11 +3,10 @@ package com.springboot.intelllij.services;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.domain.BoardUpdateDTO;
 import com.springboot.intelllij.domain.FreeBoardEntity;
-import com.springboot.intelllij.domain.FreeBoardViewEntity;
 import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.FreeBoardCommentRepository;
-import com.springboot.intelllij.repository.FreeBoardPreviewRepository;
 import com.springboot.intelllij.repository.FreeBoardRepository;
+import com.springboot.intelllij.utils.BoardComparator;
 import com.springboot.intelllij.utils.EntityUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.BOARD_NOT_FOUND;
 import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.POST_NOT_FOUND;
@@ -28,9 +28,25 @@ public class FreeBoardService {
     @Autowired
     FreeBoardRepository freeBoardRepo;
     @Autowired
-    FreeBoardPreviewRepository freeBoardPreviewRepository;
-    @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
+
+    public List<FreeBoardEntity> getAllPreview() {
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        List<FreeBoardEntity> result = freeBoardRepo.findAll();
+        result.sort(new BoardComparator());
+
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
+
+        return (List<FreeBoardEntity>) EntityUtils.setIsAuthor(result, accountId);
+    }
+
+    public List<FreeBoardEntity> getMyAllPreview() {
+        int accountId = UserUtils.getUserIdFromSecurityContextHolder();
+        List<FreeBoardEntity> result = freeBoardRepo.findByAccountId(accountId);
+        result.sort(new BoardComparator());
+        result = EntityUtils.setIsLiked(result, accountId, LikeableTables.FREE_BOARD);
+        return (List<FreeBoardEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
+    }
 
     public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
@@ -46,15 +62,14 @@ public class FreeBoardService {
     }
 
     @Transactional
-    public FreeBoardViewEntity getFreeBoardById(Integer id) {
-        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).
+    public FreeBoardEntity getFreeBoardById(Integer id) {
+        FreeBoardEntity freeBoardEntity = freeBoardRepo.findById(id).
                 orElseThrow(() -> new NotFoundException(BOARD_NOT_FOUND));
-        freeBoardViewEntity.setViewCnt(freeBoardViewEntity.getViewCnt() + 1);
-        freeBoardViewEntity = freeBoardPreviewRepository.save(freeBoardViewEntity);
-
+        freeBoardEntity.setViewCnt(freeBoardEntity.getViewCnt() + 1);
+        freeBoardEntity = freeBoardRepo.save(freeBoardEntity);
         int accountId = UserUtils.getUserIdFromSecurityContextHolder();
-        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return EntityUtils.setIsAuthor(freeBoardEntity, accountId);
     }
 
     @Transactional

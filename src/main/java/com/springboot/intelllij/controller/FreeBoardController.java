@@ -3,7 +3,6 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.FreeBoardCommentService;
-import com.springboot.intelllij.services.FreeBoardPreviewService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,16 +19,13 @@ public class FreeBoardController {
     FreeBoardService freeBoardService;
 
     @Autowired
-    FreeBoardPreviewService freeBoardPreviewService;
-
-    @Autowired
     FreeBoardCommentService freeBoardCommentService;
 
     @GetMapping
-    public List<FreeBoardViewEntity>  getFreeBoardPreviews() { return freeBoardPreviewService.getAllPreview(); }
+    public List<FreeBoardEntity>  getFreeBoardPreviews() { return freeBoardService.getAllPreview(); }
 
     @GetMapping(value = RESTPath.ID)
-    public FreeBoardViewEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
+    public FreeBoardEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
         return freeBoardService.getFreeBoardById(id);
     }
 

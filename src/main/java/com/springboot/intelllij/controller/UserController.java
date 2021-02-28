@@ -3,9 +3,10 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.AccountService;
-import com.springboot.intelllij.services.FreeBoardPreviewService;
-import com.springboot.intelllij.services.ReviewBoardPreviewService;
+import com.springboot.intelllij.services.FreeBoardService;
+import com.springboot.intelllij.services.ReviewBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,10 @@ public class UserController {
     AccountService accountService;
 
     @Autowired
-    FreeBoardPreviewService freeBoardPreviewService;
+    FreeBoardService freeBoardService;
 
     @Autowired
-    ReviewBoardPreviewService reviewBoardPreviewService;
+    ReviewBoardService reviewBoardService;
 
     @GetMapping
     public List<AccountEntity> getAllUsers() {
@@ -35,17 +36,20 @@ public class UserController {
     }
 
     @GetMapping(value = "/check/id")
-    public ResponseEntity checkId(@RequestParam(value = "id") String id) {
+    @ResponseStatus(HttpStatus.OK)
+    public CheckAvailableDTO checkId(@RequestParam(value = "id") String id) {
         return accountService.checkId(id);
     }
 
     @GetMapping(value = "/check/nickname")
-    public ResponseEntity checkNickName(@RequestParam(value = "nickname") String nickName) {
+    @ResponseStatus(HttpStatus.OK)
+    public CheckAvailableDTO checkNickName(@RequestParam(value = "nickname") String nickName) {
         return accountService.checkNickName(nickName);
     }
 
     @GetMapping(value = "/check/phoneNum")
-    public ResponseEntity checkPhoneNumber(@RequestParam(value = "phoneNum") String phoneNum) {
+    @ResponseStatus(HttpStatus.OK)
+    public CheckAvailableDTO checkPhoneNumber(@RequestParam(value = "phoneNum") String phoneNum) {
         return accountService.checkPhoneNumber(phoneNum);
     }
 
@@ -80,8 +84,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/article/me")
-    public List<FreeBoardViewEntity>  getMyFreeBoardPreviews() { return freeBoardPreviewService.getMyAllPreview(); }
+    public List<FreeBoardEntity>  getMyFreeBoardPreviews() { return freeBoardService.getMyAllPreview(); }
 
     @GetMapping(value = "/review/me")
-    public List<ReviewBoardViewWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardPreviewService.getMyAllPreview(); }
+    public List<ReviewBoardWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardService.getMyAllPreview(); }
 }

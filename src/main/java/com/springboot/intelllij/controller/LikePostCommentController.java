@@ -3,8 +3,8 @@ package com.springboot.intelllij.controller;
 import com.springboot.intelllij.constant.LikeableTables;
 import com.springboot.intelllij.constant.RESTPath;
 import com.springboot.intelllij.domain.CommentOutputDTO;
-import com.springboot.intelllij.domain.FreeBoardViewEntity;
-import com.springboot.intelllij.domain.ReviewBoardViewEntity;
+import com.springboot.intelllij.domain.FreeBoardEntity;
+import com.springboot.intelllij.domain.ReviewBoardWithLensInfoEntity;
 import com.springboot.intelllij.services.LikePostCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,25 +18,25 @@ public class LikePostCommentController {
 
     @PostMapping(value =  RESTPath.FREE_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public FreeBoardViewEntity likeFreeBoardPost(@PathVariable(name = "id") Integer id) {
+    public FreeBoardEntity likeFreeBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.likeFreeboardPost(LikeableTables.FREE_BOARD, id);
     }
 
     @DeleteMapping(value = RESTPath.FREE_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public FreeBoardViewEntity unlikeFreeBoardPost(@PathVariable(name = "id") Integer id) {
+    public FreeBoardEntity unlikeFreeBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.unlikeFreeBoardPost(LikeableTables.FREE_BOARD, id);
     }
 
     @PostMapping(value = RESTPath.REVIEW_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ReviewBoardViewEntity likeReviewBoardPost(@PathVariable(name = "id") Integer id) {
+    public ReviewBoardWithLensInfoEntity likeReviewBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.likeReviewBoardPost(LikeableTables.REVIEW_BOARD, id);
     }
 
     @DeleteMapping(value = RESTPath.REVIEW_BOARD + RESTPath.POST_LIKE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ReviewBoardViewEntity unlikeReviewBoardPost(@PathVariable(name = "id") Integer id) {
+    public ReviewBoardWithLensInfoEntity unlikeReviewBoardPost(@PathVariable(name = "id") Integer id) {
         return likePostCommentService.unlikeReviewBoardPost(LikeableTables.REVIEW_BOARD, id);
     }
 

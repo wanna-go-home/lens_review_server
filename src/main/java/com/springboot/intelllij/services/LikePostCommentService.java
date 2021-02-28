@@ -24,13 +24,7 @@ public class LikePostCommentService {
     FreeBoardRepository freeBoardRepository;
 
     @Autowired
-    FreeBoardPreviewRepository freeBoardPreviewRepository;
-
-    @Autowired
     ReviewBoardRepository reviewBoardRepository;
-
-    @Autowired
-    ReviewBoardPreviewRepository reviewBoardPreviewRepository;
 
     @Autowired
     FreeBoardCommentRepository freeBoardCommentRepository;
@@ -41,8 +35,11 @@ public class LikePostCommentService {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    LensPreviewRepository lensPreviewRepository;
+
     @Transactional
-    public FreeBoardViewEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
+    public FreeBoardEntity likeFreeboardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user= UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity =
@@ -54,16 +51,14 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() + 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
-        );
-        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
-        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return freeBoardViewEntity;
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardEntity;
+
     }
 
     @Transactional
-    public FreeBoardViewEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
+    public FreeBoardEntity unlikeFreeBoardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user = UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
@@ -76,16 +71,13 @@ public class LikePostCommentService {
             freeBoardEntity.setLikeCnt(freeBoardEntity.getLikeCnt() - 1);
             freeBoardEntity = freeBoardRepository.save(freeBoardEntity);
         }
-        FreeBoardViewEntity freeBoardViewEntity = freeBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
-        );
-        freeBoardViewEntity = EntityUtils.setIsAuthor(freeBoardViewEntity, accountId);
-        freeBoardViewEntity = EntityUtils.setIsLiked(freeBoardViewEntity, accountId, LikeableTables.FREE_BOARD, id);
-        return freeBoardViewEntity;
+        freeBoardEntity = EntityUtils.setIsAuthor(freeBoardEntity, accountId);
+        freeBoardEntity = EntityUtils.setIsLiked(freeBoardEntity, accountId, LikeableTables.FREE_BOARD, id);
+        return freeBoardEntity;
     }
 
     @Transactional
-    public ReviewBoardViewEntity likeReviewBoardPost(LikeableTables likeableTable, Integer id) {
+    public ReviewBoardWithLensInfoEntity likeReviewBoardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user = UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
@@ -101,16 +93,18 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() + 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
+
+        LensPreviewEntity lensInfo = lensPreviewRepository.findById(reviewBoardEntity.getLensId())
+                .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
+        ReviewBoardWithLensInfoEntity reviewWithLensInfo = new ReviewBoardWithLensInfoEntity(
+                reviewBoardEntity, lensInfo
         );
-        reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
-        reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
-        return reviewBoardViewEntity;
+        reviewWithLensInfo = EntityUtils.setIsLiked(reviewWithLensInfo, accountId, LikeableTables.REVIEW_BOARD, id);
+        return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
     @Transactional
-    public ReviewBoardViewEntity unlikeReviewBoardPost(LikeableTables likeableTable, Integer id) {
+    public ReviewBoardWithLensInfoEntity unlikeReviewBoardPost(LikeableTables likeableTable, Integer id) {
         AccountEntity user = UserUtils.getUserEntity();
         Integer accountId = user.getId();
         Optional<LikedHistoryEntity> likedHistoryEntity = likeHistoryRepository.findByAccountIdAndLikeableTableAndTableContentId(
@@ -125,12 +119,13 @@ public class LikePostCommentService {
             reviewBoardEntity.setLikeCnt(reviewBoardEntity.getLikeCnt() - 1);
             reviewBoardEntity = reviewBoardRepository.save(reviewBoardEntity);
         }
-        ReviewBoardViewEntity reviewBoardViewEntity = reviewBoardPreviewRepository.findById(id).orElseThrow(
-                () -> new NotFoundException(POST_NOT_FOUND)
+        LensPreviewEntity lensInfo = lensPreviewRepository.findById(reviewBoardEntity.getLensId())
+                .orElseThrow(()-> new NotFoundException(LENS_NOT_FOUND));
+        ReviewBoardWithLensInfoEntity reviewWithLensInfo = new ReviewBoardWithLensInfoEntity(
+                reviewBoardEntity, lensInfo
         );
-        reviewBoardViewEntity = EntityUtils.setIsAuthor(reviewBoardViewEntity, accountId);
-        reviewBoardViewEntity = EntityUtils.setIsLiked(reviewBoardViewEntity, accountId, LikeableTables.REVIEW_BOARD, id);
-        return reviewBoardViewEntity;
+        reviewWithLensInfo = EntityUtils.setIsLiked(reviewWithLensInfo, accountId, LikeableTables.REVIEW_BOARD, id);
+        return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
     @Transactional
