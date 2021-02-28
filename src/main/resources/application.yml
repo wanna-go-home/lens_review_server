@@ -2,6 +2,13 @@ application:
   version: 1.0.0
   title: lens_review_server
 
+server:
+  ssl:
+    key-store: classpath:lens.jks
+    key-store-password: dkdhQkrcu1!
+    key-password: dkdhQkrcu1!
+  port: 8443
+
 spring:
   profiles:
     active: dev
