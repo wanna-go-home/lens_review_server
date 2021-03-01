@@ -38,7 +38,7 @@ public class ReviewBoardCommentService {
     private final int COMMENT_DEPTH = 0;
     private final int CHILD_COMMENT_DEPTH = 1;
 
-    public ResponseEntity post(Integer postId, CommentInputDTO comment) {
+    public void post(Integer postId, CommentInputDTO comment) {
         ReviewBoardCommentEntity commentEntity = new ReviewBoardCommentEntity();
         Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
@@ -65,8 +65,6 @@ public class ReviewBoardCommentService {
 
         review.increaseReplyCnt();
         reviewBoardRepo.save(review);
-        
-        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     public List<CommentOutputDTO> getCommentByPostId(Integer postId) {
@@ -127,7 +125,7 @@ public class ReviewBoardCommentService {
         return reviewBoardCommentRepo.save(originalComment);
     }
 
-    public ResponseEntity deleteComment(Integer postId, Integer commentId) {
+    public void deleteComment(Integer postId, Integer commentId) {
         ReviewBoardCommentEntity comment = reviewBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         ReviewBoardEntity review = reviewBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
@@ -141,6 +139,5 @@ public class ReviewBoardCommentService {
         reviewBoardRepo.save(review);
 
         reviewBoardCommentRepo.deleteById(commentId);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

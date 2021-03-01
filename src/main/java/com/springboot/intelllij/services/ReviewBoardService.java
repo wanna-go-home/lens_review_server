@@ -67,24 +67,21 @@ public class ReviewBoardService {
         return EntityUtils.setIsAuthor(reviewWithLensInfo, accountId);
     }
 
-    public ResponseEntity addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
+    public void addPostToReviewBoard(ReviewBoardDto reviewBoardDto) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
         ReviewBoardEntity reviewBoard = new ReviewBoardEntity(reviewBoardDto, accountId);
         reviewBoardRepo.save(reviewBoard);
-        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @Transactional
-    public ResponseEntity deletePostAndComments(Integer id) {
+    public void deletePostAndComments(Integer id) {
         reviewBoardCommentRepository.deleteByPostId(id);
         ReviewBoardEntity reviewBoardEntity = reviewBoardRepo.findById(id).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         reviewBoardRepo.delete(reviewBoardEntity);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity updatePost(Integer id, String title, String content) {
+    public void updatePost(Integer id, String title, String content) {
         reviewBoardRepo.updateReviewBoardEntity(id, title, content);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

@@ -36,7 +36,7 @@ public class FreeBoardCommentService {
     private final int COMMENT_DEPTH = 0;
     private final int CHILD_COMMENT_DEPTH = 1;
 
-    public ResponseEntity post(Integer postId, CommentInputDTO comment) {
+    public void post(Integer postId, CommentInputDTO comment) {
         FreeBoardCommentEntity commentEntity = new FreeBoardCommentEntity();
         Integer accountId = UserUtils.getUserIdFromSecurityContextHolder();
         FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
@@ -63,8 +63,6 @@ public class FreeBoardCommentService {
 
         article.increaseReplyCnt();
         freeBoardRepo.save(article);
-
-        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     public List<CommentOutputDTO> getCommentByPostId(Integer postId) {
@@ -127,7 +125,7 @@ public class FreeBoardCommentService {
         return freeBoardCommentRepo.save(originalComment);
     }
 
-    public ResponseEntity deleteComment(Integer postId, Integer commentId) {
+    public void deleteComment(Integer postId, Integer commentId) {
         FreeBoardCommentEntity comment = freeBoardCommentRepo.findById(commentId).orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
         FreeBoardEntity article = freeBoardRepo.findById(postId).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
@@ -141,6 +139,5 @@ public class FreeBoardCommentService {
         freeBoardRepo.save(article);
 
         freeBoardCommentRepo.deleteById(commentId);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

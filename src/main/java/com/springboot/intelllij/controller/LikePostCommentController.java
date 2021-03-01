@@ -55,6 +55,7 @@ public class LikePostCommentController {
     }
 
     @PostMapping(value = RESTPath.REVIEW_BOARD + RESTPath.COMMENT_LIKE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public CommentOutputDTO likeReviewBoardComment(
             @PathVariable(name = "id") Integer id, @PathVariable(name = "commentId") Integer commentId) {
         return likePostCommentService.likeReviewBoardComment(LikeableTables.REVIEW_BOARD_COMMENT, id, commentId);

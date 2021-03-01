@@ -48,7 +48,7 @@ public class FreeBoardService {
         return (List<FreeBoardEntity>)EntityUtils.setIsAuthor(result, UserUtils.getUserIdFromSecurityContextHolder());
     }
 
-    public ResponseEntity addPostToFreeBoard(BoardUpdateDTO freeBoard) {
+    public void addPostToFreeBoard(BoardUpdateDTO freeBoard) {
         Integer accountId = (Integer)SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         FreeBoardEntity entity = new FreeBoardEntity();
@@ -58,7 +58,6 @@ public class FreeBoardService {
         entity.setTitle(freeBoard.getTitle());
 
         freeBoardRepo.save(entity);
-        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @Transactional
@@ -73,16 +72,14 @@ public class FreeBoardService {
     }
 
     @Transactional
-    public ResponseEntity deletePostAndComments(Integer id) {
+    public void deletePostAndComments(Integer id) {
         freeBoardCommentRepository.deleteByPostId(id);
         FreeBoardEntity freeBoardEntity = freeBoardRepo.findById(id).orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         freeBoardRepo.delete(freeBoardEntity);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity updatePost(Integer id, String title, String content) {
+    public void updatePost(Integer id, String title, String content) {
         freeBoardRepo.updateFreeBoardEntity(id, title, content);
-        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

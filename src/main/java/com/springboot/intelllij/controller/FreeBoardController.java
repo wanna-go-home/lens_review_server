@@ -5,6 +5,7 @@ import com.springboot.intelllij.domain.*;
 import com.springboot.intelllij.services.FreeBoardCommentService;
 import com.springboot.intelllij.services.FreeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,48 +23,55 @@ public class FreeBoardController {
     FreeBoardCommentService freeBoardCommentService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<FreeBoardEntity>  getFreeBoardPreviews() { return freeBoardService.getAllPreview(); }
 
     @GetMapping(value = RESTPath.ID)
+    @ResponseStatus(HttpStatus.OK)
     public FreeBoardEntity getFreeBoardById(@PathVariable(name = "id") Integer id) {
         return freeBoardService.getFreeBoardById(id);
     }
 
     @PutMapping(value = RESTPath.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateFreeBoardById(
+    @ResponseStatus(HttpStatus.OK)
+    public void updateFreeBoardById(
             @PathVariable(name = "id") Integer id, @RequestBody BoardUpdateDTO dto) {
-        return freeBoardService.updatePost(id, dto.getTitle(), dto.getContent());
+        freeBoardService.updatePost(id, dto.getTitle(), dto.getContent());
     }
 
     @DeleteMapping(value = RESTPath.ID)
-    public ResponseEntity deletePostAndComments(@PathVariable(name = "id") Integer id) {
-        return freeBoardService.deletePostAndComments(id);
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePostAndComments(@PathVariable(name = "id") Integer id) {
+        freeBoardService.deletePostAndComments(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity addPostToFreeBoard(@RequestBody BoardUpdateDTO freeBoard) {
-        return freeBoardService.addPostToFreeBoard(freeBoard);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addPostToFreeBoard(@RequestBody BoardUpdateDTO freeBoard) {
+        freeBoardService.addPostToFreeBoard(freeBoard);
     }
 
     @PostMapping(value = RESTPath.COMMENTS, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
-        return freeBoardCommentService.post(id, comment);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addCommentToFreeBoard(@PathVariable(name = "id") Integer id, @RequestBody CommentInputDTO comment) {
+        freeBoardCommentService.post(id, comment);
     }
 
     @GetMapping(value = RESTPath.COMMENTS)
+    @ResponseStatus(HttpStatus.OK)
     public List<CommentOutputDTO> getFreeBoardComment(@PathVariable(name = "id") Integer postId) {
         return freeBoardCommentService.getCommentByPostId(postId);
     }
 
     @GetMapping(value = RESTPath.COMMENT_ID)
+    @ResponseStatus(HttpStatus.OK)
     public List<CommentOutputDTO> getFreeBoardAllComments(
             @PathVariable(name = "id") Integer postId, @PathVariable(name = "commentId") Integer commentId) {
         return freeBoardCommentService.getAllCommentByPostId(postId,commentId);
     }
 
     @PutMapping(value = RESTPath.COMMENT_ID, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     public FreeBoardCommentEntity updateFreeBoardCommentById(
             @PathVariable(name = "id") Integer postId,
             @PathVariable(name = "commentId") Integer commentId,
@@ -72,10 +80,11 @@ public class FreeBoardController {
     }
 
     @DeleteMapping(value = RESTPath.COMMENT_ID)
-    public ResponseEntity deleteFreeBoardCommentById(
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteFreeBoardCommentById(
             @PathVariable(name = "id") Integer postId,
             @PathVariable(name = "commentId") Integer commentId) {
-        return freeBoardCommentService.deleteComment(postId, commentId);
+        freeBoardCommentService.deleteComment(postId, commentId);
     }
 
 }
