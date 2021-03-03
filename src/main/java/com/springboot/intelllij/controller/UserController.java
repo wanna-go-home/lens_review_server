@@ -26,13 +26,15 @@ public class UserController {
     ReviewBoardService reviewBoardService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<AccountEntity> getAllUsers() {
         return accountService.getAllUsers();
     }
 
     @DeleteMapping
-    public ResponseEntity deleteUser() {
-        return accountService.deleteUser();
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser() {
+        accountService.deleteUser();
     }
 
     @GetMapping(value = "/check/id")
@@ -64,28 +66,34 @@ public class UserController {
     }
 
     @GetMapping(value = "/me")
+    @ResponseStatus(HttpStatus.OK)
     public UserInfoDTO userInfo() {
         return accountService.getUserInfo();
     }
 
     @GetMapping(value = "/article/comments/me")
+    @ResponseStatus(HttpStatus.OK)
     public List<CommentOutputDTO> userArticleComments() {
         return accountService.getUserArticleComments();
     }
 
     @GetMapping(value = "/review/comments/me")
+    @ResponseStatus(HttpStatus.OK)
     public List<CommentOutputDTO> userReviewComments() {
         return accountService.getUserReviewComments();
     }
 
     @GetMapping(value = "/comments/me")
+    @ResponseStatus(HttpStatus.OK)
     public List<CommentOutputDTO> getUserAllComments() {
         return accountService.getUserAllComments();
     }
 
     @GetMapping(value = "/article/me")
+    @ResponseStatus(HttpStatus.OK)
     public List<FreeBoardEntity>  getMyFreeBoardPreviews() { return freeBoardService.getMyAllPreview(); }
 
     @GetMapping(value = "/review/me")
+    @ResponseStatus(HttpStatus.OK)
     public List<ReviewBoardWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardService.getMyAllPreview(); }
 }

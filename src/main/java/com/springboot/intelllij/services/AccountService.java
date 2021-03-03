@@ -36,7 +36,7 @@ public class AccountService {
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
-    public ResponseEntity deleteUser() {
+    public void deleteUser() {
         AccountEntity accountEntity = UserUtils.getUserEntity();
 
         accountEntity.setAccountEmail(null);
@@ -44,8 +44,6 @@ public class AccountService {
         accountEntity.setPhoneNum(null);
         accountEntity.setActive(false);
         userRepo.save(accountEntity);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public CheckAvailableDTO checkId(String email) {
@@ -83,10 +81,7 @@ public class AccountService {
 
     private boolean isDuplicatedNickName(String nickName) {
         List<AccountEntity> nickNameList = userRepo.findByNickname(nickName);
-        if(nickNameList.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !nickNameList.isEmpty();
     }
 
     public CheckAvailableDTO checkPhoneNumber(String phoneNumber) {
