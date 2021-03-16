@@ -6,14 +6,20 @@ import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
 import com.springboot.intelllij.utils.UserUtils;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.json.simple.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +39,19 @@ public class AccountService {
 
     @Autowired
     ReviewBoardCommentRepository reviewCommentRepo;
+
+    @Value("${sms.api-key}")
+    String smsApiKey;
+
+    @Value("${sms.api-secret}")
+    String smsApiSecret;
+
+    @Value("${sms.app-version}")
+    String smsAppVersion;
+
+    @Value("${sms.from}")
+    String smsFrom;
+
 
     public List<AccountEntity> getAllUsers() { return userRepo.findAll(); }
 
@@ -188,4 +207,34 @@ public class AccountService {
         return result;
     }
 
+    public ResponseEntity sendSMS(String requestId, String phoneNum, String appHash) {
+        Message smsMessage = new Message(smsApiKey, smsApiSecret);
+        StringBuilder builder = new StringBuilder();
+        Random random = new Random(System.currentTimeMillis());
+
+        builder.append("<#> [");
+        for(int i = 0; i < 6; i++) {
+            builder.append(random.nextInt(10));
+        }
+
+        builder.append("] 인증코드를 입력해주세요. ");
+        builder.append(appHash);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("to", phoneNum);
+        params.put("from",smsFrom);
+        params.put("type","SMS");
+        params.put("text",builder.toString());
+        params.put("app_version", smsAppVersion);
+
+        try {
+            JSONObject obj = (JSONObject) smsMessage.send(params);
+            System.out.println(obj.toString());
+        } catch (CoolsmsException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCode());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

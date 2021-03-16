@@ -96,4 +96,11 @@ public class UserController {
     @GetMapping(value = "/review/me")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewBoardWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardService.getMyAllPreview(); }
+
+    @GetMapping(value = "/check/sendsms")
+    public ResponseEntity sendSMS(@RequestParam(value = "requestId") String requestId,
+                                  @RequestParam(value = "phoneNum") String phoneNum,
+                                  @RequestParam(value = "appHash") String appHash) {
+        return accountService.sendSMS(requestId, phoneNum, appHash);
+    }
 }
