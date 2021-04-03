@@ -37,27 +37,9 @@ public class UserController {
         accountService.deleteUser();
     }
 
-    @GetMapping(value = "/check/id")
-    @ResponseStatus(HttpStatus.OK)
-    public CheckAvailableDTO checkId(@RequestParam(value = "id") String id) {
-        return accountService.checkId(id);
-    }
-
-    @GetMapping(value = "/check/nickname")
-    @ResponseStatus(HttpStatus.OK)
-    public CheckAvailableDTO checkNickName(@RequestParam(value = "nickname") String nickName) {
-        return accountService.checkNickName(nickName);
-    }
-
-    @GetMapping(value = "/check/phoneNum")
-    @ResponseStatus(HttpStatus.OK)
-    public CheckAvailableDTO checkPhoneNumber(@RequestParam(value = "phoneNum") String phoneNum) {
-        return accountService.checkPhoneNumber(phoneNum);
-    }
-
     @PostMapping(value = "/signup")
-    public ResponseEntity signup(@RequestBody AccountEntity accountEntity) {
-        return accountService.signup(accountEntity);
+    public ResponseEntity signup(@RequestBody UserAuthDTO userAuthDTO) {
+        return accountService.signup(userAuthDTO);
     }
 
     @PutMapping(value = "/modify/nickname")
@@ -98,9 +80,14 @@ public class UserController {
     public List<ReviewBoardWithLensInfoEntity> getMyReviewBoardPreview() { return reviewBoardService.getMyAllPreview(); }
 
     @GetMapping(value = "/check/sendsms")
-    public ResponseEntity sendSMS(@RequestParam(value = "requestId") String requestId,
-                                  @RequestParam(value = "phoneNum") String phoneNum,
+    public UserAuthDTO sendSMS(@RequestParam(value = "phoneNum") String phoneNum,
                                   @RequestParam(value = "appHash") String appHash) {
-        return accountService.sendSMS(requestId, phoneNum, appHash);
+        return accountService.sendSMS(phoneNum, appHash);
+    }
+
+    @GetMapping(value = "/check/authcode")
+    public ResponseEntity checkAuthCode(@RequestParam(value = "requestId") Integer requestId,
+                                     @RequestParam(value = "authCode") String authCode) {
+        return accountService.checkAuthCode(requestId, authCode);
     }
 }

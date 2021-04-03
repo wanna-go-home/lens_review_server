@@ -1,32 +1,52 @@
 package com.springboot.intelllij.services;
 
+import com.springboot.intelllij.constant.AuthConstant;
 import com.springboot.intelllij.constant.CheckUserInfoEnum;
 import com.springboot.intelllij.domain.*;
+import com.springboot.intelllij.exceptions.AuthException;
+import com.springboot.intelllij.exceptions.AuthExceptionEnum;
+import com.springboot.intelllij.exceptions.NotFoundException;
 import com.springboot.intelllij.repository.*;
 import com.springboot.intelllij.utils.CommentComparator;
 import com.springboot.intelllij.utils.StringValidationUtils;
+import com.springboot.intelllij.utils.TokenUtils;
 import com.springboot.intelllij.utils.UserUtils;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.json.simple.*;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.springboot.intelllij.exceptions.AuthExceptionEnum.*;
+import static com.springboot.intelllij.exceptions.EntityNotFoundExceptionEnum.USER_NOT_FOUND;
+
 @Service
 public class AccountService {
 
     @Autowired
+    TokenUtils tokenUtils;
+
+    @Autowired
     AccountRepository userRepo;
+
+    @Autowired
+    UserAuthRepository userAuthRepo;
+
+    @Autowired
+    UserRepository newUserRepo;
 
     @Autowired
     ReviewBoardRepository reviewRepo;
@@ -65,28 +85,6 @@ public class AccountService {
         userRepo.save(accountEntity);
     }
 
-    public CheckAvailableDTO checkId(String email) {
-        CheckAvailableDTO checkAvailable;
-        if (userRepo.findByAccountEmail(email).isPresent()) {
-            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
-        } else if (!StringValidationUtils.isValidEmail(email)) {
-            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.INVALID.ordinal());
-        } else {
-            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
-        }
-        return checkAvailable;
-    }
-
-    public CheckAvailableDTO checkNickName(String nickName) {
-        CheckAvailableDTO checkAvailable;
-        if (isDuplicatedNickName(nickName)) {
-            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
-        } else {
-            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
-        }
-        return checkAvailable;
-    }
-
     public ResponseEntity changeNickName(UserModifyDTO userModifyDTO) {
         if(isDuplicatedNickName(userModifyDTO.getNickName())) {
             AccountEntity user = UserUtils.getUserEntity();
@@ -103,38 +101,7 @@ public class AccountService {
         return !nickNameList.isEmpty();
     }
 
-    public CheckAvailableDTO checkPhoneNumber(String phoneNumber) {
-        CheckAvailableDTO checkAvailable;
-        List<AccountEntity> phoneNumList = userRepo.findByPhoneNum(phoneNumber);
-        if(!phoneNumList.isEmpty()) {
-            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.OCCUPIED.ordinal());
-        } else if (!StringValidationUtils.isValidPhoneNumber(phoneNumber)) {
-            checkAvailable = new CheckAvailableDTO(false, CheckUserInfoEnum.INVALID.ordinal());
-        } else {
-            checkAvailable = new CheckAvailableDTO(true, CheckUserInfoEnum.AVAILABLE.ordinal());
-        }
-        return checkAvailable;
-    }
 
-    public ResponseEntity<CheckAvailableDTO> signup(AccountEntity accountEntity) {
-        CheckAvailableDTO checkAvailable;
-        checkAvailable = checkId(accountEntity.getAccountEmail());
-        if (!checkAvailable.isAvailable()) {
-            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
-        }
-        checkAvailable = checkNickName(accountEntity.getNickname());
-        if (!checkAvailable.isAvailable()) {
-            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
-        }
-        checkAvailable = checkPhoneNumber(accountEntity.getPhoneNum());
-        if (!checkAvailable.isAvailable()) {
-            return new ResponseEntity<CheckAvailableDTO>(checkAvailable, HttpStatus.NOT_ACCEPTABLE);
-        }
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        accountEntity.setAccountPw(bCryptPasswordEncoder.encode(accountEntity.getAccountPw()));
-        userRepo.save(accountEntity);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
     public UserInfoDTO getUserInfo() {
         UserInfoDTO userInfo = new UserInfoDTO();
@@ -207,16 +174,17 @@ public class AccountService {
         return result;
     }
 
-    public ResponseEntity sendSMS(String requestId, String phoneNum, String appHash) {
+    public UserAuthDTO sendSMS(String phoneNum, String appHash) {
         Message smsMessage = new Message(smsApiKey, smsApiSecret);
         StringBuilder builder = new StringBuilder();
         Random random = new Random(System.currentTimeMillis());
+        String authCode = "";
 
         builder.append("<#> [");
         for(int i = 0; i < 6; i++) {
-            builder.append(random.nextInt(10));
+            authCode += String.valueOf(random.nextInt(10));
         }
-
+        builder.append(authCode);
         builder.append("] 인증코드를 입력해주세요. ");
         builder.append(appHash);
 
@@ -227,14 +195,81 @@ public class AccountService {
         params.put("text",builder.toString());
         params.put("app_version", smsAppVersion);
 
+        UserAuthEntity userAuthEntity = new UserAuthEntity();
+        userAuthEntity.setAuthCode(authCode);
+        userAuthEntity.setPhoneNum(phoneNum);
+        UserAuthEntity savedUserAuthEntity = userAuthRepo.save(userAuthEntity);
+
         try {
             JSONObject obj = (JSONObject) smsMessage.send(params);
-            System.out.println(obj.toString());
+            UserAuthDTO result = new UserAuthDTO();
+            result.setRequestId(savedUserAuthEntity.getId());
+            return result;
         } catch (CoolsmsException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCode());
+            throw new AuthException(SMS_SERVICE_NOT_WORKING);
+        }
+    }
+
+    public ResponseEntity checkAuthCode(Integer requestId,String authCode) {
+        UserAuthEntity userAuthEntity = userAuthRepo.findById(requestId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        if (!userAuthEntity.getAuthCode().equals(authCode)) {
+            throw new AuthException(AUTH_CODE_NOT_MATCH);
+        } else if (ZonedDateTime.now().minusMinutes(3).isAfter(userAuthEntity.getCreatedAt())) {
+            throw new AuthException(EXPIRED_REQUEST);
+        } else {
+            userAuthEntity.setVerified(true);
+            userAuthRepo.save(userAuthEntity);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+    }
+
+    public ResponseEntity signup(UserAuthDTO userAuthDTO) {
+        UserAuthEntity userAuthEntity = userAuthRepo.findById(userAuthDTO.getRequestId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        if(!userAuthEntity.isVerified()) {
+            throw new AuthException(NOT_VERIFIED);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        String token = "";
+        List<NewAccountEntity> userList = newUserRepo.findByPhoneNum(userAuthEntity.getPhoneNum());
+        if(userList.isEmpty()) {
+            token = tokenUtils.generateJwt(createNewUser(userAuthDTO));
+        } else {
+            for (NewAccountEntity newAccountEntity : userList) {
+                if(newAccountEntity.isActivate()) {
+                    if(newAccountEntity.getPinNum().equals(userAuthDTO.getPin())) {
+                        token = tokenUtils.generateJwt(newAccountEntity);
+                        break;
+                    } else {
+                        newAccountEntity.setActivate(false);
+                        newUserRepo.save(newAccountEntity);
+                        token = tokenUtils.generateJwt(createNewUser(userAuthDTO));
+                    }
+                }
+            }
+        }
+
+        if(token.equalsIgnoreCase("")) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set(AuthConstant.AUTH_HEADER,AuthConstant.TOKEN_TYPE + " " + token);
+        return ResponseEntity.ok().headers(responseHeaders).body(ResponseEntity.status(HttpStatus.OK).build());
+    }
+
+    private NewAccountEntity createNewUser(UserAuthDTO userAuthDTO) {
+        UserAuthEntity userAuthEntity = userAuthRepo.findById(userAuthDTO.getRequestId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        NewAccountEntity newUser = new NewAccountEntity();
+        newUser.setPhoneNum(userAuthEntity.getPhoneNum());
+        newUser.setPinNum(userAuthDTO.getPin());
+        newUser.setNickname(RandomStringUtils.randomAlphabetic(6));
+        newUser.setActivate(true);
+        return newUserRepo.save(newUser);
     }
 }
