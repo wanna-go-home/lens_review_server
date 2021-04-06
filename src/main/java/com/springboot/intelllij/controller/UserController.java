@@ -87,7 +87,7 @@ public class UserController {
 
     @GetMapping(value = "/check/authcode")
     public ResponseEntity checkAuthCode(@RequestParam(value = "requestId") Integer requestId,
-                                     @RequestParam(value = "authCode") String authCode) {
+                                     @RequestParam(value = "authCode", defaultValue = "") String authCode) {
         return accountService.checkAuthCode(requestId, authCode);
     }
 }
