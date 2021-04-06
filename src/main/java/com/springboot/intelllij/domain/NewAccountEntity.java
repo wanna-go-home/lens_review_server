@@ -1,6 +1,5 @@
 package com.springboot.intelllij.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -16,24 +14,23 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name = "user_auth")
-public class UserAuthEntity {
+@Table(name = "account_b")
+public class NewAccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
     @Column(name = "phone_num")
     private String phoneNum;
 
-    @Column(name = "auth_code")
-    private String authCode;
+    @Column(name = "pin_num")
+    private String pinNum;
 
-    @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private ZonedDateTime createdAt;
+    @Column(name = "nickname")
+    private String nickname;
 
-    @Column(name = "verified")
-    private boolean verified = false;
+    @Column(name = "activate")
+    private boolean activate = true;
 }

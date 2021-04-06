@@ -1,6 +1,7 @@
 package com.springboot.intelllij.utils;
 
 import com.springboot.intelllij.domain.AccountEntity;
+import com.springboot.intelllij.domain.NewAccountEntity;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,16 @@ public class TokenUtils {
     public String generateJwt(AccountEntity account) {
         JwtBuilder builder = Jwts.builder()
                 .setSubject(account.getAccountEmail())
+                .setHeader(createHeader())
+                .setClaims(createClaims(account))
+                .setExpiration(createExpireDateForOneYear())
+                .signWith(SignatureAlgorithm.HS256,createSigningKey());
+        return builder.compact();
+    }
+
+    public String generateJwt(NewAccountEntity account) {
+        JwtBuilder builder = Jwts.builder()
+                .setSubject(account.getPhoneNum())
                 .setHeader(createHeader())
                 .setClaims(createClaims(account))
                 .setExpiration(createExpireDateForOneYear())
@@ -75,6 +86,14 @@ public class TokenUtils {
         claims.put("email", account.getAccountEmail());
         claims.put("nickname", account.getNickname());
         claims.put("id", account.getId());
+        return claims;
+    }
+
+    private Map<String, Object> createClaims(NewAccountEntity account) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("phoneNum", account.getPhoneNum());
+        claims.put("nickname", account.getNickname());
+        claims.put("pin", account.getPinNum());
         return claims;
     }
 
