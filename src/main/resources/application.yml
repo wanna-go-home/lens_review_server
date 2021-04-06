@@ -10,10 +10,10 @@ server:
   port: 8443
 
 sms:
-  api-key: ${SMS_API_KEY}
-  api-secret: ${SMS_API_SECRET}
+  api-key:
+  api-secret:
   app-version: test app 1.2
-  from: ${PHONE_NUMBER}
+  from:
 
 
 

@@ -81,7 +81,7 @@ public class UserController {
 
     @GetMapping(value = "/check/sendsms")
     public UserAuthDTO sendSMS(@RequestParam(value = "phoneNum") String phoneNum,
-                                  @RequestParam(value = "appHash") String appHash) {
+                                  @RequestParam(value = "appHash", defaultValue = "") String appHash) {
         return accountService.sendSMS(phoneNum, appHash);
     }
 
