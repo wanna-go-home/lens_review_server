@@ -19,10 +19,11 @@ public class JwtInterceptor implements HandlerInterceptor {
             if(handler != null) {
                 String token = TokenUtils.getTokenFromHeader(header);
                 if(TokenUtils.isValidToken(token)) {
-                    String userEmail = TokenUtils.getUserAccount(token);
-                    Integer userId = TokenUtils.getUserId(token);
-                    UsernamePasswordAuthenticationToken claimedToken = new UsernamePasswordAuthenticationToken(userEmail, "test");
-                    claimedToken.setDetails(userId);
+                    //String userEmail = TokenUtils.getUserAccount(token);
+                    String userPhoneNum = TokenUtils.getUserPhoneNum(token);
+                    //Integer userId = TokenUtils.getUserId(token);
+                    UsernamePasswordAuthenticationToken claimedToken = new UsernamePasswordAuthenticationToken(userPhoneNum, "test");
+                    //claimedToken.setDetails(userId);
                     SecurityContextHolder.getContext().setAuthentication(claimedToken);
                     return true;
                 }

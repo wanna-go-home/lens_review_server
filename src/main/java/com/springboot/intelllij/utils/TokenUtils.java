@@ -58,6 +58,11 @@ public class TokenUtils {
             return header.split(" ")[1];
     }
 
+    public static String getUserPhoneNum(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("phoneNum").toString();
+    }
+
     public static String getUserAccount(String token) {
         Claims claims = getClaimsFromToken(token);
         return claims.get("email").toString();
